@@ -3,8 +3,8 @@ var mongoose = require('mongoose');
 var placeSchema = new mongoose.Schema({
   name: String,
   description: String,
-  location: {lat: Number, lng: Number},
-  img: {data: Buffer, contentType: String},
+  coordinate: {lat: Number, lng: Number},
+  img: String,
   review: {
     overall: {type: Number, default: 0},
     food: {type: Number, default: 0},
