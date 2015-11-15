@@ -41,28 +41,6 @@ app.post('/api/places', function(req, res, next) {
   var coordinate = JSON.parse(req.body.coordinate);
   var imageUrl = req.body.imageUrl;
 
-  /*Place.findOne({name: name}, function(err, place) {
-      if (err) return next(err);
-
-      if (place) {
-        return res.status(409).send({message: place.name + ' is already in the database'});
-      }
-  });
-
-  console.log('coordinate is ' + coordinate);
-  console.log('img is ' + imageUrl);
-  var place = new Place({
-    name: name,
-    description: description,
-    coordinate: coordinate,
-    img: imageUrl
-  });
-
-  place.save(function(err) {
-    if (err) return next(err);
-
-    res.send({message: name + ' has been add successfully!'});
-  });*/
   async.series([
     function(callback) {
       Place.findOne({name: name}, function(err, place) {
@@ -93,6 +71,21 @@ app.post('/api/places', function(req, res, next) {
 
     }]
   );
+});
+
+app.get('/api/places/:name', function(req, res, next) {
+  var name = req.params.name;
+  console.log('city name is' + name);
+
+  Place.findOne({ name: name }, function(err, place) {
+    if (err) return next(err);
+
+    if (!place) {
+      return res.status(404).send({message: 'Place Not Found.'});
+    }
+
+    res.send(place);
+  });
 });
 
 app.use(function(req, res) {
