@@ -22,7 +22,7 @@ class PlaceInfo extends React.Component {
 
     $('#rateInput').rating({
       size: 'sm',
-      readonly: true,
+      readOnly: true,
       showCaption: false,
       showClear: false
     });
@@ -53,10 +53,8 @@ class PlaceInfo extends React.Component {
               <span className='col-sm-5'>Latitute: <strong>{this.state.coordinate.lat}</strong></span>
               <span className='col-sm-5'>Longitude: <strong>{this.state.coordinate.lng}</strong></span>
             </h4>
-            <h4 className='lead'>
-              <h4 className='col-sm-5 lead'>Overall Rate: </h4>
-              <input id='rateInput' className='col-sm-5 rating' value={this.state.rate}></input>
-            </h4>
+            <h4 className='col-sm-5 lead'>Overall Rate: </h4>
+            <input id='rateInput' className='col-sm-5 rating' value={this.state.rate} readOnly='true'></input>
           </div>
           <div className='profile-stats clearfix'>
             <ul>
