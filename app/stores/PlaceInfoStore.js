@@ -8,6 +8,7 @@ class PlaceInfoStore {
     this.description = 'TBD';
     this.coordinate = {'lat': '', 'lng': ''};
     this.image = '';
+    this.rate = 5;
   }
 
   onGetPlaceInfoSuccess(data) {
@@ -15,6 +16,7 @@ class PlaceInfoStore {
     this.description = data.description;
     this.coordinate = data.coordinate;
     this.image = data.img;
+    this.rate = data.review.overall;
   }
 
   onGetPlaceInfoFail(jqXHR) {

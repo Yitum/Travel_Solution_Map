@@ -19,6 +19,13 @@ class PlaceInfo extends React.Component {
       closeOnContentClick: true,
       midClick: true
     });
+
+    $('#rateInput').rating({
+      size: 'sm',
+      readonly: true,
+      showCaption: false,
+      showClear: false
+    });
   }
 
   componentWillMount() {
@@ -27,27 +34,36 @@ class PlaceInfo extends React.Component {
 
   onChange(state) {
     this.setState(state);
+    $('#rateInput').rating('update', this.state.rate);
   }
 
   render() {
     return(
       <div className='container'>
-        <div className='profile-img'>
-          <a className='magnific-popup' href={this.state.image}>
-            <img src={this.state.image} />
-          </a>
-        </div>
-        <div className='profile-info clearfix'>
-          <h2><strong>{this.state.name}</strong></h2>
-          <h4 className='lead'>Description: <strong>{this.state.description}</strong></h4>
-          <h4 className='lead'>Latitute: <strong>{this.state.coordinate.lat}</strong></h4>
-          <h4 className='lead'>Longitude: <strong>{this.state.coordinate.lng}</strong></h4>
-        </div>
-        <div className='profile-stats clearfix'>
-          <ul>
-            <li><span className='stats-number'></span>Rate</li>
-            <li><span className='stats-number'></span>Review</li>
-          </ul>
+        <div className='col-sm-10'>
+          <div className='profile-img'>
+            <a className='magnific-popup' href={this.state.image}>
+              <img src={this.state.image} />
+            </a>
+          </div>
+          <div className='profile-info clearfix'>
+            <h2 className='col-sm-10'><strong>{this.state.name}</strong></h2>
+            <h4 className='lead col-sm-10'>Description: <strong>{this.state.description}</strong></h4>
+            <h4 className='lead'>
+              <span className='col-sm-5'>Latitute: <strong>{this.state.coordinate.lat}</strong></span>
+              <span className='col-sm-5'>Longitude: <strong>{this.state.coordinate.lng}</strong></span>
+            </h4>
+            <h4 className='lead'>
+              <h4 className='col-sm-5 lead'>Overall Rate: </h4>
+              <input id='rateInput' className='col-sm-5 rating' value={this.state.rate}></input>
+            </h4>
+          </div>
+          <div className='profile-stats clearfix'>
+            <ul>
+              <li><span className='stats-number'></span>Rate</li>
+              <li><span className='stats-number'></span>Review</li>
+            </ul>
+          </div>
         </div>
       </div>
     );
