@@ -35,8 +35,43 @@ mongoose.connection.on('error', function() {
   console.info('Error: Could not connect to MongoDB. Did you forget to run `mongod`?');
 });
 
+app.post('/api/places/comments', function(req, res, next) {
+  var placename = req.body.placename.toLowerCase();
+  var food = parseInt(req.body.food);
+  var entertainment = parseInt(req.body.entertainment);
+  var traffic = parseInt(req.body.traffic);
+  var beauty = parseInt(req.body.beauty);
+  var overall = (food + entertainment + traffic + beauty) / 4;
+  var author = req.body.author;
+  var text = req.body.text;
+
+  async.waterfall([
+    function(callback) {
+      Place.findOne({name: placename}, function(err, place) {
+        if (err) return next(err);
+
+        if (!place) {
+          return res.status(409).send({message: 'Unable to find ' + placename});
+        }
+        callback(null, place);
+      });
+    },
+    function(place, callback) {
+      place.review.comments.push({
+        food: food, entertainment: entertainment, traffic: traffic,
+        beauty: beauty, overall: overall, author: author, date: Date(), text: text});
+
+      place.save(function(err) {
+        if (err) return next(err);
+
+        res.send({message: 'Your review has been submitted successfully'});
+      })
+    }
+  ]);
+});
+
 app.post('/api/places', function(req, res, next) {
-  var name = req.body.name;
+  var name = req.body.name.toLowerCase();
   var description = req.body.description;
   var coordinate = JSON.parse(req.body.coordinate);
   var imageUrl = req.body.imageUrl;
@@ -74,8 +109,7 @@ app.post('/api/places', function(req, res, next) {
 });
 
 app.get('/api/places/:name', function(req, res, next) {
-  var name = req.params.name;
-  console.log('city name is' + name);
+  var name = req.params.name.toLowerCase();
 
   Place.findOne({ name: name }, function(err, place) {
     if (err) return next(err);

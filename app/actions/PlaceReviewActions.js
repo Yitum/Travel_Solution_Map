@@ -14,12 +14,24 @@ class PlaceReviewActions {
       'invalidTrafficRate',
       'invalidBeautyRate',
       'invalidAuthor',
-      'invalidText'
+      'invalidText',
+      'addReviewSuccess',
+      'addReviewFail'
     );
   }
 
   addReview(placename, food, entertainment, traffic, beauty, author, text) {
-    console.log(placename);
+    $.ajax({
+      type: 'POST',
+      url: '/api/places/comments',
+      data: {placename, food, entertainment, traffic, beauty, author, text}
+    })
+      .done((data) => {
+        this.actions.addReviewSuccess(data.message);
+      })
+      .fail((jqXHR, textStatus, errorThrown) => {
+        this.actions.addReviewFail(jqXHR.responseJSON.message);
+      });
   }
 }
 

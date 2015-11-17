@@ -11,10 +11,15 @@ var placeSchema = new mongoose.Schema({
     entertainment: {type: Number, default: 0},
     traffic: {type: Number, default: 0},
     beauty: {type: Number, default: 0},
-    commments: [{
+    comments: [{
       author: String,
       date: Date,
-      text: String
+      text: String,
+      overall: {type: Number, default: 0},
+      food: {type: Number, default: 0},
+      entertainment: {type: Number, default: 0},
+      traffic: {type: Number, default: 0},
+      beauty: {type: Number, default: 0}
     }]
   }
 });

@@ -91,6 +91,14 @@ class PlaceReviewStore {
     this.helpBlock = '';
   }
 
+  onAddReviewSuccess(successMessage) {
+    this.helpBlock = successMessage;
+  }
+
+  onAddReviewFail(failMessage) {
+    this.helpBlock = failMessage;
+  }
+
 }
 
 export default alt.createStore(PlaceReviewStore);

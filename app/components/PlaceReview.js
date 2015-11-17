@@ -20,8 +20,6 @@ class PlaceReview extends React.Component {
       max: 5
     });
 
-    $('.rating').removeAttr('required');
-
     $('.rating').on('rating.change', function(event, value, caption) {
         switch(event.target.id) {
           case 'rateFoodInpute':
