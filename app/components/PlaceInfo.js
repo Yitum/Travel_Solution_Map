@@ -11,7 +11,7 @@ class PlaceInfo extends React.Component {
 
   componentDidMount() {
     PlaceInfoStore.listen(this.onChange);
-    PlaceInfoActions.getPlaceInfo(this.props.name);
+    PlaceInfoActions.getPlaceInfo(this.props.placename);
 
     $('.magnific-popup').magnificPopup({
       type:'image',

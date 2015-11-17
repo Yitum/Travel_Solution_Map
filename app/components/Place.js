@@ -5,14 +5,14 @@ import PlaceReview from './PlaceReview';
 class Place extends React.Component {
   constructor(props) {
     super(props);
-    this.name = props.params.name;
+    this.placename = props.params.placename;
   }
 
   render() {
     return(
       <div className='container'>
-        <PlaceInfo name={this.name} />
-        <PlaceReview name={this.name} />
+        <PlaceInfo placename={this.placename} />
+        <PlaceReview placename={this.placename} />
       </div>
     );
   }

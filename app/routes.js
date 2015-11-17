@@ -10,6 +10,6 @@ export default (
   <Route component={App}>
     <Route path='/' component={Home} />
     <Route path='/add' component={AddPlace} />
-    <Route path='/places/:name' component={Place} />
+    <Route path='/places/:placename' component={Place} />
   </Route>
 );
