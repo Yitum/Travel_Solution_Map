@@ -35,7 +35,7 @@ mongoose.connection.on('error', function() {
   console.info('Error: Could not connect to MongoDB. Did you forget to run `mongod`?');
 });
 
-app.post('/api/places/comments', function(req, res, next) {
+app.post('/api/places/review', function(req, res, next) {
   var placename = req.body.placename.toLowerCase();
   var food = parseInt(req.body.food);
   var entertainment = parseInt(req.body.entertainment);
@@ -106,6 +106,20 @@ app.post('/api/places', function(req, res, next) {
 
     }]
   );
+});
+
+app.get('/api/places/comments', function(req, res, next) {
+  var name = req.query.name.toLowerCase();
+
+  Place.findOne({name: name}, function(err, place) {
+    if (err) return next(err);
+
+    if (!place) {
+      return res.status(409).send({message: 'Fail to get comments from ' + name})
+    }
+
+    res.send(place.review.comments);
+  });
 });
 
 app.get('/api/places/:name', function(req, res, next) {

@@ -23,7 +23,7 @@ class PlaceReviewActions {
   addReview(placename, food, entertainment, traffic, beauty, author, text) {
     $.ajax({
       type: 'POST',
-      url: '/api/places/comments',
+      url: '/api/places/review',
       data: {placename, food, entertainment, traffic, beauty, author, text}
     })
       .done((data) => {
