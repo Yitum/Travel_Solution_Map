@@ -53,14 +53,11 @@ class PlaceInfo extends React.Component {
               <span className='col-sm-5'>Latitute: <strong>{this.state.coordinate.lat}</strong></span>
               <span className='col-sm-5'>Longitude: <strong>{this.state.coordinate.lng}</strong></span>
             </h4>
-            <h4 className='col-sm-5 lead'>Overall Rate: </h4>
-            <input id='rateInput' className='col-sm-5 rating' value={this.state.rate} readOnly='true'></input>
-          </div>
-          <div className='profile-stats clearfix'>
-            <ul>
-              <li><span className='stats-number'></span>Rate</li>
-              <li><span className='stats-number'></span>Review</li>
-            </ul>
+            <div>
+              <h4 className='col-sm-5 lead'>Overall Rate: </h4>
+              <input id='rateInput' className='col-sm-5 rating' value={this.state.rate} readOnly='true'></input>
+            </div>
+            <div className='lead col-sm-10'>Reviews: <strong>{this.state.count}</strong></div>
           </div>
         </div>
       </div>

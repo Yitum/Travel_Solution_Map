@@ -60,7 +60,7 @@ app.post('/api/places/review', function(req, res, next) {
       place.review.comments.push({
         food: food, entertainment: entertainment, traffic: traffic,
         beauty: beauty, overall: overall, author: author, date: Date(), text: text});
-
+      place.updateRate();
       place.save(function(err) {
         if (err) return next(err);
 
