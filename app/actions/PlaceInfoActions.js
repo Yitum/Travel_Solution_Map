@@ -9,7 +9,6 @@ class PlaceInfoActions {
   }
 
   getPlaceInfo(placeName) {
-    console.log('getPlaceInfo has been called')
     $.ajax({ url: '/api/places/' + placeName })
       .done((data) => {
         this.actions.getPlaceInfoSuccess(data);

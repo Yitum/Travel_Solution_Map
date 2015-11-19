@@ -9,7 +9,6 @@ class PlaceCommentListStore {
 
   onGetCommentsSuccess(data) {
     this.comments = data;
-    console.log(this.comments);
   }
 
   onGetCommentsFail(failMessage) {
