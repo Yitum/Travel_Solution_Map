@@ -28,6 +28,8 @@ class PlaceReviewActions {
     })
       .done((data) => {
         this.actions.addReviewSuccess(data.message);
+        /* IMPORVE ME update the pagr after add new data*/
+        location.reload();
       })
       .fail((jqXHR, textStatus, errorThrown) => {
         this.actions.addReviewFail(jqXHR.responseJSON.message);
