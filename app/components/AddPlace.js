@@ -1,4 +1,5 @@
 import React from 'react';
+import {GoogleMap, Marker} from 'react-google-maps';
 import AddPlaceStore from '../stores/AddPlaceStore';
 import AddPlaceActions from '../actions/AddPlaceActions';
 
@@ -7,6 +8,14 @@ class AddPlace extends React.Component {
     super(props);
     this.state = AddPlaceStore.getState();
     this.onChange = this.onChange.bind(this);
+    this.markers = [{
+      position: {
+        lat: 48.421440,
+        lng: -89.262108
+      },
+      key: "Lakehead University",
+      defaultAnimation: 2
+    }];
   }
 
   componentDidMount() {
@@ -116,7 +125,24 @@ render() {
                   </div>
                 </form>
               </div>
+
             </div>
+
+            <GoogleMap
+              containerProps={{
+                style: {
+                  height: 300,
+                },
+              }}
+              defaultZoom={15}
+              defaultCenter={{lat: 48.421440, lng: -89.262108}}
+            >
+              {this.markers.map((marker, index) => {
+                return (
+                  <Marker {...marker} />
+                );
+              })}
+            </GoogleMap>
           </div>
         </div>
       </div>

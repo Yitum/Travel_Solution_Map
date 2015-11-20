@@ -2,9 +2,8 @@ import React from 'react';
 import {Route} from 'react-router';
 import App from './components/App';
 import Home from './components/Home';
-import AddCharacter from './components/AddCharacter';
 import AddPlace from './components/AddPlace';
-import Place from './components/Place'
+import Place from './components/Place';
 
 export default (
   <Route component={App}>
