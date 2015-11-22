@@ -8,18 +8,68 @@ class AddPlace extends React.Component {
     super(props);
     this.state = AddPlaceStore.getState();
     this.onChange = this.onChange.bind(this);
-    this.markers = [{
-      position: {
-        lat: 48.421440,
-        lng: -89.262108
-      },
-      key: "Lakehead University",
-      defaultAnimation: 2
-    }];
+    this.markers = [];
+  }
+
+  initMap() {
+    var map = new google.maps.Map(this.refs.googleMap, {
+      center: {lat: 48.421440, lng: -89.262108},
+      zoom: 15
+    });
+    var input = document.getElementById('pac-input');
+    var searchBox = new google.maps.places.SearchBox(input);
+
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+    map.addListener('bound_changed', function(){
+      searchBox.setBounds(map.getBounds());
+    });
+
+    searchBox.addListener('places_changed', () => {
+      var places = searchBox.getPlaces();
+
+      if(places.length == 0) {
+        return;
+      }
+
+      // Clean the markers
+      this.state.markers.forEach(function(marker) {
+        marker.setMap(null);
+      });
+      this.state.markers = [];
+
+      var bounds = new google.maps.LatLngBounds();
+
+      // Create new markers accoring to the input place
+      places.forEach((place) => {
+        this.state.markers.push(new google.maps.Marker({
+          map: map,
+          title: place.name,
+          position: place.geometry.location
+        }));
+        if (place.geometry.viewport) {
+          // Only geocodes have viewport.
+          bounds.union(place.geometry.viewport);
+        } else {
+          bounds.extend(place.geometry.location);
+        }
+      });
+
+      map.fitBounds(bounds);
+    });
+
+    /* Init and add the default markers to the map */
+    this.state.markers.push(new google.maps.Marker({
+      map: map,
+      title: 'Lakehead University',
+      position: {lat: 48.421440, lng: -89.262108},
+      animation: google.maps.Animation.DROP
+    }));
   }
 
   componentDidMount() {
     AddPlaceStore.listen(this.onChange);
+    this.initMap();
   }
 
   componentWillUnmount() {
@@ -82,6 +132,7 @@ render() {
       <div className='container'>
         <div className='row flipInX animated'>
           <div className='col-sm-10'>
+
             <div className='panel panel-default'>
               <div className='panel-heading'>Add Place</div>
               <div className='panel-body'>
@@ -125,24 +176,9 @@ render() {
                   </div>
                 </form>
               </div>
-
             </div>
-
-            <GoogleMap
-              containerProps={{
-                style: {
-                  height: 300,
-                },
-              }}
-              defaultZoom={15}
-              defaultCenter={{lat: 48.421440, lng: -89.262108}}
-            >
-              {this.markers.map((marker, index) => {
-                return (
-                  <Marker {...marker} />
-                );
-              })}
-            </GoogleMap>
+            <input id='pac-input' ref='pac-input' className='type-selector' type='text' placeholder='Search Box' />
+            <div id='googleMap' ref='googleMap' style={{height:300}}></div>
           </div>
         </div>
       </div>
@@ -151,5 +187,3 @@ render() {
 }
 
 export default AddPlace;
-
-

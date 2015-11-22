@@ -16,6 +16,8 @@ class AddPlaceStore {
     this.description = '';
     this.coordinate = {'lat': '', 'lng': ''};
     this.imageUrl = '';
+
+    this.markers = [];
   }
 
   onAddCharacterSuccess(successMessage) {
