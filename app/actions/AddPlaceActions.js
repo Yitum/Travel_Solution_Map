@@ -12,6 +12,7 @@ class AddPlaceActions {
       'updateDescription',
       'updateCoordinateLat',
       'updateCoordinateLng',
+      'updateCoordinate',
       'updateImage',
       'invalidName',
       'invalidGender',

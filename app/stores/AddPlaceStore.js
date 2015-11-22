@@ -55,6 +55,13 @@ class AddPlaceStore {
     this.helpBlock = '';
   }
 
+  onUpdateCoordinate(event) {
+    this.coordinate.lat = event.latLng.lat();
+    this.coordinate.lng = event.latLng.lng();
+    this.coordinateValidationState = '';
+    this.helpBlock = '';
+  }
+
   onUpdateCoordinateLat(event) {
     this.coordinate.lat = event.target.value;
     this.coordinateValidationState = '';

@@ -42,11 +42,16 @@ class AddPlace extends React.Component {
 
       // Create new markers accoring to the input place
       places.forEach((place) => {
-        this.state.markers.push(new google.maps.Marker({
+        let newMarker = new google.maps.Marker({
           map: map,
           title: place.name,
           position: place.geometry.location
-        }));
+        });
+        newMarker.addListener('click', function(event) {
+          AddPlaceActions.updateCoordinate(event);
+        });
+
+        this.state.markers.push(newMarker);
         if (place.geometry.viewport) {
           // Only geocodes have viewport.
           bounds.union(place.geometry.viewport);
@@ -57,14 +62,6 @@ class AddPlace extends React.Component {
 
       map.fitBounds(bounds);
     });
-
-    /* Init and add the default markers to the map */
-    this.state.markers.push(new google.maps.Marker({
-      map: map,
-      title: 'Lakehead University',
-      position: {lat: 48.421440, lng: -89.262108},
-      animation: google.maps.Animation.DROP
-    }));
   }
 
   componentDidMount() {
