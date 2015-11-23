@@ -10,27 +10,31 @@ class Home extends React.Component {
   }
 
   initMap() {
+    /* Initiate the google map object  */
     this.map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: 48.421440, lng: -89.262108},
       zoom: 15
     });
 
+    /* Get the input element node */
     var originInput = document.getElementById('originInput');
     var destinationInput = document.getElementById('destinationInput');
 
+    /* initiate autocomplete objects */
     var options = {
       types: ['(cities)'],
       componentRestrictions: {country: 'ca'}
     }
-
     var originAutocomplete = new google.maps.places.Autocomplete(originInput, options);
     var destinationAutocomplete = new google.maps.places.Autocomplete(destinationInput, options);
 
+    /* initiate infowindow and maker */
     var infowindow = new google.maps.InfoWindow();
     var marker = new google.maps.Marker({
       map: this.map,
       anchorPoint: new google.maps.Point(0, -29)
     });
+
     /* Place autocomplete input handler */
     var placeHandler = (place, inputTarget) => {
       infowindow.close();
@@ -72,6 +76,7 @@ class Home extends React.Component {
       infowindow.open(this.map, marker);
     }
 
+    /* Add place_changed event listener to those input elements */
     originAutocomplete.addListener('place_changed', (event) => {
       var place = originAutocomplete.getPlace();
       placeHandler(place, 'origin');
@@ -81,6 +86,7 @@ class Home extends React.Component {
       var place = destinationAutocomplete.getPlace();
       placeHandler(place, 'destination');
     });
+
   }
 
   onChange(state) {
