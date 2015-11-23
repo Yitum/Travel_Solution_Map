@@ -5,7 +5,10 @@ class HomeActions {
     this.generateActions(
       'updateOrigin',
       'updateDestination',
-      'updateFavorite'
+      'updateFavorite',
+      'invalidOrigin',
+      'invalidDestination',
+      'invalidFavorite'
     );
 
   }

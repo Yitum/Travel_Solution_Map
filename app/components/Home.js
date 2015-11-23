@@ -29,6 +29,28 @@ class Home extends React.Component {
     HomeStore.unlisten(this.onChange);
   }
 
+  searchHandler(event) {
+    event.preventDefault();
+
+    var origin = this.state.origin.trim();
+    var destination = this.state.destination.trim();
+    var favorite = this.state.favorite;
+
+    if (!origin) {
+      HomeActions.invalidOrigin();
+      this.refs.originTextField.focus();
+    }
+
+    if (!destination) {
+      HomeActions.invalidDestination();
+      this.refs.destinationTextField.focus();
+    }
+
+    if (favorite == 'Favorite') {
+      HomeActions.invalidFavorite();
+    }
+  }
+
 
   render() {
     return (
@@ -41,15 +63,17 @@ class Home extends React.Component {
                 <h3 className='panel-title'>Start Your Trip!</h3>
               </div>
               <div className='row panel-body'>
-                <div className='col-xs-12 input-goup'>
-                  <input type='text' className='form-control' placeholder='From ...' aria-describedby='basic-addon1' />
+                <div className={'col-xs-12 input-goup ' + this.state.originValidationState}>
+                  <input type='text' className='form-control' value={this.state.origin} placeholder='From ...'
+                    ref='originTextField' aria-describedby='basic-addon1' onChange={HomeActions.updateOrigin} />
                 </div>
-                <div className='col-xs-12 input-goup'>
-                  <input type='text' className='form-control' placeholder='To ...' aria-describedby='basic-addon1' />
+                <div className={'col-xs-12 input-goup ' + this.state.destinationValidationState}>
+                  <input type='text' className='form-control' value={this.state.destination} placeholder='To ...'
+                    ref='destinationTextField' aria-describedby='basic-addon1' onChange={HomeActions.updateDestination} />
                 </div>
-                <div className="col-xs-12 btn-group">
-                  <button type="button" className="btn btn-default">{this.state.favorite}</button>
-                  <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <div className='col-xs-12 btn-group'>
+                  <button type="button" className={'btn ' + this.state.favoriteValidationState}>{this.state.favorite}</button>
+                  <button type="button" className={'btn dropdown-toggle ' + this.state.favoriteValidationState} data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <span className="caret"></span>
                     <span className="sr-only">Toggle Dropdown</span>
                   </button>
@@ -63,7 +87,8 @@ class Home extends React.Component {
                   </ul>
                 </div>
                 <div className='col-xs-12 search-button'>
-                  <button type='button' className='btn btn-primary'>Search</button>
+                  <button type='button' className='btn btn-primary' onClick={this.searchHandler.bind(this)} >Search</button>
+                  <span className='help-block'>{this.state.helpBlock}</span>
                 </div>
               </div>
             </div>
