@@ -46,9 +46,9 @@
 
 @screen-sm: 800px;
 
-html {
-  position: relative;
-  min-height: 100%;
+html body #app {
+  min-height: 100% !important;
+  height: 100%;
 }
 
 body {
@@ -915,4 +915,30 @@ label {
   font-family: Roboto;
   font-size: 13px;
   font-weight: 300;
+}
+
+/* HOME MAP CSS*/
+
+.map-container {
+  height: 700px;
+}
+
+.map-panel {
+  padding: 0 5px 0 10px;
+}
+
+.map-panel-searchbox {
+  padding: 0;
+}
+
+.search-button {
+  padding: 10px 0 0 15px
+}
+
+.map-panel-route {
+  padding: 0;
+}
+
+.map-box {
+  height: 100%;
 }
