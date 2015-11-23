@@ -14,6 +14,66 @@ class Home extends React.Component {
       center: {lat: 48.421440, lng: -89.262108},
       zoom: 15
     });
+
+    var originInput = document.getElementById('originInput');
+    var destinationInput = document.getElementById('destinationInput');
+
+    var options = {
+      types: ['(cities)'],
+      componentRestrictions: {country: 'ca'}
+    }
+
+    var originAutocomplete = new google.maps.places.Autocomplete(originInput, options);
+    var destinationAutocomplete = new google.maps.places.Autocomplete(destinationInput, options);
+
+    var infowindow = new google.maps.InfoWindow();
+    var marker = new google.maps.Marker({
+      map: this.map,
+      anchorPoint: new google.maps.Point(0, -29)
+    });
+    /* Place autocomplete input handler */
+    var placeHandler = (place, inputTarget) => {
+      infowindow.close();
+      marker.setVisible(false);
+
+      if (!place.geometry) {
+        window.alert("Autocomplete's returned place contains no geometry");
+        return;
+      }
+
+      // If the place has a geometry, then present it on a map.
+      if (place.geometry.viewport) {
+        this.map.fitBounds(place.geometry.viewport);
+      } else {
+        this.map.setCenter(place.geometry.location);
+        this.map.setZoom(17);  // Why 17? Because it looks good.
+      }
+
+      marker.setPosition(place.geometry.location);
+      marker.setVisible(true);
+
+      var address = '';
+      if (place.address_components) {
+        address = [
+          (place.address_components[0] && place.address_components[0].short_name || ''),
+          (place.address_components[1] && place.address_components[1].short_name || ''),
+          (place.address_components[2] && place.address_components[2].short_name || '')
+        ].join(' ');
+      }
+
+      infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
+      infowindow.open(this.map, marker);
+    }
+
+    originAutocomplete.addListener('place_changed', (event) => {
+      var place = originAutocomplete.getPlace();
+      placeHandler(place, 'orgin');
+    });
+
+    destinationAutocomplete.addListener('place_changed', () => {
+      var place = destinationAutocomplete.getPlace();
+      placeHandler(place, 'destination');
+    });
   }
 
   onChange(state) {
@@ -64,11 +124,11 @@ class Home extends React.Component {
               </div>
               <div className='row panel-body'>
                 <div className={'col-xs-12 input-goup ' + this.state.originValidationState}>
-                  <input type='text' className='form-control' value={this.state.origin} placeholder='From ...'
+                  <input id='originInput' type='text' className='form-control' value={this.state.origin} placeholder='From ...'
                     ref='originTextField' aria-describedby='basic-addon1' onChange={HomeActions.updateOrigin} />
                 </div>
                 <div className={'col-xs-12 input-goup ' + this.state.destinationValidationState}>
-                  <input type='text' className='form-control' value={this.state.destination} placeholder='To ...'
+                  <input id='destinationInput' type='text' className='form-control' value={this.state.destination} placeholder='To ...'
                     ref='destinationTextField' aria-describedby='basic-addon1' onChange={HomeActions.updateDestination} />
                 </div>
                 <div className='col-xs-12 btn-group'>
