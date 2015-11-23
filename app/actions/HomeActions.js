@@ -6,6 +6,8 @@ class HomeActions {
       'updateOrigin',
       'updateDestination',
       'updateFavorite',
+      'updateOriginDisplay',
+      'updateDestinationDisplay',
       'invalidOrigin',
       'invalidDestination',
       'invalidFavorite'

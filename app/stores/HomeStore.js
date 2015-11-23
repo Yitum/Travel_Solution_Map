@@ -5,22 +5,24 @@ class HomeStore {
   constructor() {
     this.bindActions(HomeActions);
     this.helpBlock = '';
-    this.origin = '';
-    this.destination = '';
+    this.origin = {'name': '', 'location': ''};
+    this.destination = {'name': '', 'location': ''};
     this.favorite = 'Favorite';
     this.originValidationState = '';
     this.destinationValidationState = '';
     this.favoriteValidationState = 'btn-default';
   }
 
-  onUpdateOrigin(event) {
-    this.origin = event.target.value;
+  onUpdateOrigin(place) {
+    this.origin.name = place.address_components[0].short_name;
+    this.origin.location = place.geometry.location;
     this.originValidationState = '';
     this.helpBlock = '';
   }
 
-  onUpdateDestination(event) {
-    this.destination = event.target.value;
+  onUpdateDestination(place) {
+    this.destination.name = place.address_components[0].short_name;
+    this.destination.location = place.geometry.location;
     this.destinationValidationState = '';
     this.helpBlock = '';
   }
@@ -28,6 +30,18 @@ class HomeStore {
   onUpdateFavorite(event) {
     this.favorite = event[0];
     this.favoriteValidationState = 'btn-default';
+    this.helpBlock = '';
+  }
+
+  onUpdateOriginDisplay(event) {
+    this.origin.name = event.target.value;
+    this.originValidationState = '';
+    this.helpBlock = '';
+  }
+
+  onUpdateDestinationDisplay(event) {
+    this.destination.name = event.target.value;
+    this.destinationValidationState = '';
     this.helpBlock = '';
   }
 

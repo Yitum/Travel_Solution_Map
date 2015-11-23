@@ -59,6 +59,13 @@ class Home extends React.Component {
           (place.address_components[1] && place.address_components[1].short_name || ''),
           (place.address_components[2] && place.address_components[2].short_name || '')
         ].join(' ');
+
+        /* Update origin and destination*/
+        if (inputTarget == 'origin') {
+          HomeActions.updateOrigin(place);
+        } else {
+          HomeActions.updateDestination(place);
+        }
       }
 
       infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
@@ -67,7 +74,7 @@ class Home extends React.Component {
 
     originAutocomplete.addListener('place_changed', (event) => {
       var place = originAutocomplete.getPlace();
-      placeHandler(place, 'orgin');
+      placeHandler(place, 'origin');
     });
 
     destinationAutocomplete.addListener('place_changed', () => {
@@ -92,8 +99,8 @@ class Home extends React.Component {
   searchHandler(event) {
     event.preventDefault();
 
-    var origin = this.state.origin.trim();
-    var destination = this.state.destination.trim();
+    var origin = this.state.origin.name.trim();
+    var destination = this.state.destination.name.trim();
     var favorite = this.state.favorite;
 
     if (!origin) {
@@ -124,12 +131,12 @@ class Home extends React.Component {
               </div>
               <div className='row panel-body'>
                 <div className={'col-xs-12 input-goup ' + this.state.originValidationState}>
-                  <input id='originInput' type='text' className='form-control' value={this.state.origin} placeholder='From ...'
-                    ref='originTextField' aria-describedby='basic-addon1' onChange={HomeActions.updateOrigin} />
+                  <input id='originInput' type='text' className='form-control' value={this.state.origin.name} placeholder='From ...'
+                    ref='originTextField' aria-describedby='basic-addon1' onChange={HomeActions.updateOriginDisplay} />
                 </div>
                 <div className={'col-xs-12 input-goup ' + this.state.destinationValidationState}>
-                  <input id='destinationInput' type='text' className='form-control' value={this.state.destination} placeholder='To ...'
-                    ref='destinationTextField' aria-describedby='basic-addon1' onChange={HomeActions.updateDestination} />
+                  <input id='destinationInput' type='text' className='form-control' value={this.state.destination.name} placeholder='To ...'
+                    ref='destinationTextField' aria-describedby='basic-addon1' onChange={HomeActions.updateDestinationDisplay}/>
                 </div>
                 <div className='col-xs-12 btn-group'>
                   <button type="button" className={'btn ' + this.state.favoriteValidationState}>{this.state.favorite}</button>
