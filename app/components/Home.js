@@ -1,8 +1,12 @@
 import React from 'react';
+import HomeActions from '../actions/HomeActions';
+import HomeStore from '../stores/HomeStore';
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
+    this.state = HomeStore.getState();
+    this.onChange = this.onChange.bind(this);
   }
 
   initMap() {
@@ -12,9 +16,19 @@ class Home extends React.Component {
     });
   }
 
+  onChange(state) {
+    this.setState(state);
+  }
+
   componentDidMount() {
+    HomeStore.listen(this.onChange);
     this.initMap();
   }
+
+  componentWillUnmount() {
+    HomeStore.unlisten(this.onChange);
+  }
+
 
   render() {
     return (
@@ -34,18 +48,18 @@ class Home extends React.Component {
                   <input type='text' className='form-control' placeholder='To ...' aria-describedby='basic-addon1' />
                 </div>
                 <div className="col-xs-12 btn-group">
-                  <button type="button" className="btn btn-default">Favorite</button>
+                  <button type="button" className="btn btn-default">{this.state.favorite}</button>
                   <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <span className="caret"></span>
                     <span className="sr-only">Toggle Dropdown</span>
                   </button>
                   <ul className="dropdown-menu">
-                    <li><a href="#">Food</a></li>
-                    <li><a href="#">Entertainment</a></li>
-                    <li><a href="#">Traffic</a></li>
-                    <li><a href="#">Beauty</a></li>
+                    <li><a value='Food' onClick={HomeActions.updateFavorite.bind(this, 'Food')}>Food</a></li>
+                    <li><a value='Entertainment' onClick={HomeActions.updateFavorite.bind(this, 'Entertainment')}>Entertainment</a></li>
+                    <li><a value='Traffic' onClick={HomeActions.updateFavorite.bind(this, 'Traffic')}>Traffic</a></li>
+                    <li><a value='Beauty' onClick={HomeActions.updateFavorite.bind(this, 'Beauty')}>Beauty</a></li>
                     <li role="separator" className="divider"></li>
-                    <li><a href="#">Distance</a></li>
+                    <li><a name='Distance' onClick={HomeActions.updateFavorite.bind(this, 'Distance')}>Distance</a></li>
                   </ul>
                 </div>
                 <div className='col-xs-12 search-button'>
