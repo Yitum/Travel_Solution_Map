@@ -27,7 +27,7 @@ app.set('port', process.env.PORT || 3000);
 app.use(logger('dev'));
 /* A middleware to parse json*/
 app.use(bodyParser.json({limit: '5mb'}));
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false, limit: '5mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 mongoose.connect(config.database);
