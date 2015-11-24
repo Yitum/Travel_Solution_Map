@@ -121,8 +121,8 @@ class Home extends React.Component {
 
       /* Initiate an info window for each marker */
       var contentString = '<div>' +
-        '<h5>' + placeInfo.name + '</h4>' +
-        '<h5>Rate: ' + placeInfo.review.overall + ' /5</h4>' +
+        '<h5><a href="/places/' + placeInfo.name + '">' + placeInfo.name.toUpperCase() + '</a></h5>' +
+        '<h5>Rate: ' + placeInfo.review.overall + ' /5</h5>' +
         '<h5>Description: ' + placeInfo.description + '</h5>' +
       '</div>';
 
