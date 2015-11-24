@@ -17,6 +17,9 @@ class HomeStore {
     this.originValidationState = '';
     this.destinationValidationState = '';
     this.favoriteValidationState = 'btn-default';
+
+    this.markers = [];
+    this.placesInfo =[];
   }
 
   onUpdateOrigin(place) {
@@ -72,6 +75,14 @@ class HomeStore {
     this.helpBlock = 'Directions request failed due to ' + status;
   }
 
+  onGetPlacesInfoSuccess(places) {
+    this.placesInfo = places;
+    toastr.info('Get places basic info successfully')
+  }
+
+  onGetPlacesInfoFail(jqXHR) {
+    toastr.error(jqXHR.responseJSON.message);
+  }
 }
 
 export default alt.createStore(HomeStore);

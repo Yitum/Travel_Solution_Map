@@ -11,9 +11,24 @@ class HomeActions {
       'invalidOrigin',
       'invalidDestination',
       'invalidFavorite',
-      'invalidDirectionRequest'
+      'invalidDirectionRequest',
+      'getPlacesInfoSuccess',
+      'getPlacesInfoFail'
     );
 
+  }
+
+  getPlacesInfo() {
+    $.ajax({
+      type: 'GET',
+      url: '/api/places/info'
+    })
+      .done((data) => {
+        this.actions.getPlacesInfoSuccess(data);
+      })
+      .fail((jqXHR, textStatus, errorThrown) => {
+        this.actions.getPlacesInfoFail(errorThrown);
+      });
   }
 }
 

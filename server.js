@@ -108,6 +108,17 @@ app.post('/api/places', function(req, res, next) {
   );
 });
 
+app.get('/api/places/info', function(req, res, next) {
+  Place.find(null, 'name description coordinate review.overall', function(err, places) {
+    if (err) return next(err);
+
+    if (!places) {
+      return res.status(409).send({message: 'Fail to get place basic infomation'})
+    }
+    res.send(places);
+  })
+});
+
 app.get('/api/places/comments', function(req, res, next) {
   var name = req.query.name.toLowerCase();
 

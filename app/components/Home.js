@@ -33,7 +33,7 @@ class Home extends React.Component {
     var originAutocomplete = new google.maps.places.Autocomplete(originInput, options);
     var destinationAutocomplete = new google.maps.places.Autocomplete(destinationInput, options);
 
-    /* initiate infowindow and maker */
+    /* initiate infowindow and marker */
     var infowindow = new google.maps.InfoWindow();
     var marker = new google.maps.Marker({
       map: this.map,
@@ -94,6 +94,37 @@ class Home extends React.Component {
 
   }
 
+  initMapMarkers() {
+    /* Get the places basic info */
+    HomeActions.getPlacesInfo();
+    /* Since there is a delay between getting the date and sending the request */
+    /* Therefore set a timeout to before really getting the data */
+    setTimeout(this.updateMapMarkers.bind(this), 1000);
+  }
+
+  updateMapMarkers() {
+    if (this.state.placesInfo.length == 0) {
+      toastr.Error('Fail to add place marker');
+      return;
+    }
+
+    this.state.markers.forEach((marker) => {
+      marker.setMap(null);
+    });
+    this.state.markers = [];
+
+    /* Literal each place and generate a marker on the map */
+    this.state.placesInfo.forEach((placeInfo) => {
+      var marker = new google.maps.Marker({
+        position: placeInfo.coordinate,
+        map: this.map,
+        title: placeInfo.name
+      });
+
+      this.state.markers.push(marker);
+    });
+  }
+
   onChange(state) {
     this.setState(state);
   }
@@ -101,10 +132,14 @@ class Home extends React.Component {
   componentDidMount() {
     HomeStore.listen(this.onChange);
     this.initMap();
+    this.initMapMarkers();
   }
 
-  componentWillUnmount() {
+  componentDidUpdate() {
     HomeStore.unlisten(this.onChange);
+  }
+
+  componentDidUpdate() {
   }
 
   calculateAndDisplayRoute() {
