@@ -33,17 +33,9 @@ class Home extends React.Component {
     var originAutocomplete = new google.maps.places.Autocomplete(originInput, options);
     var destinationAutocomplete = new google.maps.places.Autocomplete(destinationInput, options);
 
-    /* initiate infowindow and marker */
-    var infowindow = new google.maps.InfoWindow();
-    var marker = new google.maps.Marker({
-      map: this.map,
-      anchorPoint: new google.maps.Point(0, -29)
-    });
 
     /* Place autocomplete input handler */
     var placeHandler = (place, inputTarget) => {
-      infowindow.close();
-      marker.setVisible(false);
 
       if (!place.geometry) {
         window.alert("Autocomplete's returned place contains no geometry");
@@ -58,17 +50,7 @@ class Home extends React.Component {
         this.map.setZoom(17);  // Why 17? Because it looks good.
       }
 
-      marker.setPosition(place.geometry.location);
-      marker.setVisible(true);
-
-      var address = '';
       if (place.address_components) {
-        address = [
-          (place.address_components[0] && place.address_components[0].short_name || ''),
-          (place.address_components[1] && place.address_components[1].short_name || ''),
-          (place.address_components[2] && place.address_components[2].short_name || '')
-        ].join(' ');
-
         /* Update origin and destination*/
         if (inputTarget == 'origin') {
           HomeActions.updateOrigin(place);
@@ -76,9 +58,6 @@ class Home extends React.Component {
           HomeActions.updateDestination(place);
         }
       }
-
-      infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
-      infowindow.open(this.map, marker);
     }
 
     /* Add place_changed event listener to those input elements */
