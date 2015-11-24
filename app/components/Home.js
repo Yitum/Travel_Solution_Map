@@ -13,12 +13,17 @@ class Home extends React.Component {
     /* Initiate the google map object  */
     this.map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: 48.421440, lng: -89.262108},
-      zoom: 15
+      zoom: 6
     });
 
     /* Get the input element node */
     var originInput = document.getElementById('originInput');
     var destinationInput = document.getElementById('destinationInput');
+
+    /* initiate the direction service and display */
+    this.directionsService = new google.maps.DirectionsService;
+    this.directionsDisplay = new google.maps.DirectionsRenderer;
+    this.directionsDisplay.setMap(this.map);
 
     /* initiate autocomplete objects */
     var options = {
@@ -77,7 +82,7 @@ class Home extends React.Component {
     }
 
     /* Add place_changed event listener to those input elements */
-    originAutocomplete.addListener('place_changed', (event) => {
+    originAutocomplete.addListener('place_changed', () => {
       var place = originAutocomplete.getPlace();
       placeHandler(place, 'origin');
     });
@@ -102,6 +107,21 @@ class Home extends React.Component {
     HomeStore.unlisten(this.onChange);
   }
 
+  calculateAndDisplayRoute() {
+    this.directionsService.route({
+      origin: this.state.origin.location,
+      destination: this.state.destination.location,
+      travelMode: google.maps.TravelMode.DRIVING
+    }, (response, status) => {
+      if (status === google.maps.DirectionsStatus.OK) {
+        this.directionsDisplay.setDirections(response);
+      } else {
+        HomeActions.invalidDirectionRequest(status);
+      }
+    });
+  }
+
+
   searchHandler(event) {
     event.preventDefault();
 
@@ -121,6 +141,10 @@ class Home extends React.Component {
 
     if (favorite == 'Favorite') {
       HomeActions.invalidFavorite();
+    }
+
+    if (origin && destination && favorite != 'Favorite') {
+      this.calculateAndDisplayRoute();
     }
   }
 

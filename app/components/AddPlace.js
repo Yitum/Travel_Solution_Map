@@ -85,8 +85,8 @@ class AddPlace extends React.Component {
     var gender = this.state.gender;
     var description = this.state.description.trim();
     var coordinate = {
-      'lat': this.state.coordinate.lat.trim(),
-      'lng': this.state.coordinate.lng.trim()
+      'lat': this.state.coordinate.lat,
+      'lng': this.state.coordinate.lng
     };
     var imageUrl = this.state.imageUrl;
 

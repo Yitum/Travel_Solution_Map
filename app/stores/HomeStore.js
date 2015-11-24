@@ -5,8 +5,14 @@ class HomeStore {
   constructor() {
     this.bindActions(HomeActions);
     this.helpBlock = '';
-    this.origin = {'name': '', 'location': ''};
-    this.destination = {'name': '', 'location': ''};
+    this.origin = {
+      'name': '',
+      'location': {'lat': '', 'lng': ''}
+    };
+    this.destination = {
+      'name': '',
+      'location': {'lat': '', 'lng': ''}
+    };
     this.favorite = 'Favorite';
     this.originValidationState = '';
     this.destinationValidationState = '';
@@ -15,14 +21,16 @@ class HomeStore {
 
   onUpdateOrigin(place) {
     this.origin.name = place.address_components[0].short_name;
-    this.origin.location = place.geometry.location;
+    this.origin.location.lat = place.geometry.location.lat();
+    this.origin.location.lng = place.geometry.location.lng();
     this.originValidationState = '';
     this.helpBlock = '';
   }
 
   onUpdateDestination(place) {
     this.destination.name = place.address_components[0].short_name;
-    this.destination.location = place.geometry.location;
+    this.destination.location.lat = place.geometry.location.lat();
+    this.destination.location.lng = place.geometry.location.lng();
     this.destinationValidationState = '';
     this.helpBlock = '';
   }
@@ -58,6 +66,10 @@ class HomeStore {
   onInvalidFavorite() {
     this.favoriteValidationState = 'btn-warning';
     this.helpBlock = 'Please select your favorite';
+  }
+
+  onInvalidDirectionRequest(status) {
+    this.helpBlock = 'Directions request failed due to ' + status;
   }
 
 }

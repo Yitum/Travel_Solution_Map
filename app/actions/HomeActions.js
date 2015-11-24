@@ -10,7 +10,8 @@ class HomeActions {
       'updateDestinationDisplay',
       'invalidOrigin',
       'invalidDestination',
-      'invalidFavorite'
+      'invalidFavorite',
+      'invalidDirectionRequest'
     );
 
   }
