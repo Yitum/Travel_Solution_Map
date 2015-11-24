@@ -18,16 +18,17 @@ class HomeActions {
 
   }
 
-  getPlacesInfo() {
+  getPlacesInfo(callback) {
     $.ajax({
       type: 'GET',
       url: '/api/places/info'
     })
       .done((data) => {
         this.actions.getPlacesInfoSuccess(data);
+        callback();
       })
       .fail((jqXHR, textStatus, errorThrown) => {
-        this.actions.getPlacesInfoFail(errorThrown);
+        this.actions.getPlacesInfoFail(jqXHR);
       });
   }
 }

@@ -96,10 +96,7 @@ class Home extends React.Component {
 
   initMapMarkers() {
     /* Get the places basic info */
-    HomeActions.getPlacesInfo();
-    /* Since there is a delay between getting the date and sending the request */
-    /* Therefore set a timeout to before really getting the data */
-    setTimeout(this.updateMapMarkers.bind(this), 1000);
+    HomeActions.getPlacesInfo(this.updateMapMarkers.bind(this));
   }
 
   updateMapMarkers() {
@@ -231,7 +228,7 @@ class Home extends React.Component {
               <div className='panel-heading'>
                   <h3 className='panel-title'>Route</h3>
               </div>
-              <div className='row panel-body'>
+              <div id='directionPanel' className='row panel-body'>
               </div>
             </div>
           </div>
