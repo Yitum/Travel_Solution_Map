@@ -19,6 +19,7 @@ class HomeStore {
     this.favoriteValidationState = 'btn-default';
 
     this.markers = [];
+    this.infoWindows = []
     this.placesInfo =[];
   }
 

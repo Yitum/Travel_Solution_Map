@@ -115,10 +115,30 @@ class Home extends React.Component {
       var marker = new google.maps.Marker({
         position: placeInfo.coordinate,
         map: this.map,
-        title: placeInfo.name
+        title: placeInfo.name,
+        anchorPoint: new google.maps.Point(0, -29)
       });
 
+      /* Initiate an info window for each marker */
+      var contentString = '<div>' +
+        '<h5>' + placeInfo.name + '</h4>' +
+        '<h5>Rate: ' + placeInfo.review.overall + ' /5</h4>' +
+        '<h5>Description: ' + placeInfo.description + '</h5>' +
+      '</div>';
+
+      var infowindow = new google.maps.InfoWindow({
+        content: contentString,
+        maxWidth: 200
+      });
+
+      /* Add click event listener to each marker */
+      marker.addListener('click', () => {
+        infowindow.open(this.map, marker);
+      })
+
+      this.state.infoWindows.push(infowindow);
       this.state.markers.push(marker);
+
     });
   }
 
