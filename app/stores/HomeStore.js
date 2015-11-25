@@ -19,7 +19,7 @@ class HomeStore {
     this.favoriteValidationState = 'btn-default';
 
     this.markers = [];
-    this.infoWindows = []
+    this.infoWindows = [];
     this.placesInfo =[];
   }
 
@@ -83,6 +83,14 @@ class HomeStore {
 
   onGetPlacesInfoFail(jqXHR) {
     toastr.error(jqXHR.responseJSON.message);
+  }
+
+  onGetWayPointsSuccess(data) {
+
+  }
+
+  onGetWayPointsFail(jqXHR) {
+
   }
 }
 

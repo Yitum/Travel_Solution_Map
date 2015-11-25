@@ -13,7 +13,9 @@ class HomeActions {
       'invalidFavorite',
       'invalidDirectionRequest',
       'getPlacesInfoSuccess',
-      'getPlacesInfoFail'
+      'getPlacesInfoFail',
+      'getWayPointsSuccess',
+      'getWayPointsFail'
     );
 
   }
@@ -29,6 +31,23 @@ class HomeActions {
       })
       .fail((jqXHR, textStatus, errorThrown) => {
         this.actions.getPlacesInfoFail(jqXHR);
+      });
+  }
+
+  getWayPoints(origin, destination, favorite) {
+    $.ajax({
+      type: 'GET',
+      url: '/api/places/favorite/' + favorite.toLowerCase(),
+      data: {
+        origin: JSON.stringify(origin),
+        destination: JSON.stringify(destination)
+      }
+    })
+      .done((data) => {
+        this.actions.getWayPointsSuccess(data);
+      })
+      .fail((jqXHR, textStatus, errorThrown) => {
+        this.actions.getWayPointsFail(jqXHR);
       });
   }
 }

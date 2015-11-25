@@ -175,6 +175,7 @@ class Home extends React.Component {
     }
 
     if (origin && destination && favorite != 'Favorite') {
+      HomeActions.getWayPoints(this.state.origin, this.state.destination, favorite);
       this.calculateAndDisplayRoute();
     }
   }

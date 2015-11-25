@@ -108,6 +108,62 @@ app.post('/api/places', function(req, res, next) {
   );
 });
 
+app.get('/api/places/favorite/:type', function(req, res, next) {
+  var favorite = req.params.type;
+  var origin = JSON.parse(req.query.origin);
+  var destination = JSON.parse(req.query.destination);
+
+  var largeLat = origin.location.lat > destination.location.lat ? origin.location.lat : destination.location.lat;
+  var smallLat = origin.location.lat < destination.location.lat ? origin.location.lat : destination.location.lat;
+  var largeLng = origin.location.lng > destination.location.lng ? origin.location.lng : destination.location.lng;
+  var smallLng = origin.location.lng < destination.location.lng ? origin.location.lng : destination.location.lng;
+
+  async.waterfall([
+    function(callback) {
+      Place.
+        find().
+        select('name coordinate review.food review.entertainment review.traffic review.beauty').
+        exec(function(err, places) {
+          if (err) return next(err);
+
+          if (!places) {
+            return res.status(409).send({message: ''});
+          }
+
+          callback(null, places);
+        });
+    },
+    function(places, callback) {
+      var nodes = [];
+
+      places.forEach(function(place) {
+        var lat = place.coordinate.lat;
+        var lng = place.coordinate.lng;
+        if (false) {
+          console.log('%s lat: %d lng: %d', place.name, lat, lng);
+          console.log('lat in the range: %d to %d', smallLat, largeLat);
+          console.log('lng in the range: %d to %d', smallLng, largeLng);
+        }
+
+        if (lat >= smallLat && lat <= largeLat) {
+          if (lng >= smallLng && lng <= largeLng) {
+            nodes.push(place);
+          }
+        }
+      });
+
+      if (nodes.length == 0) {
+        return res.status(409).send({message: 'No place found between two cities'});
+      }
+
+      callback(null, nodes);
+    },
+    function(places, callback) {
+      console.log(places);
+    }
+  ]);
+});
+
 app.get('/api/places/info', function(req, res, next) {
   Place.find(null, 'name description coordinate review.overall', function(err, places) {
     if (err) return next(err);
