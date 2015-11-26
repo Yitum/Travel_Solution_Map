@@ -101,7 +101,11 @@ class Home extends React.Component {
       /* Initiate an info window for each marker */
       var contentString = '<div>' +
         '<h5><a href="/places/' + placeInfo.name + '">' + placeInfo.name.toUpperCase() + '</a></h5>' +
-        '<h5>Rate: ' + placeInfo.review.overall + ' /5</h5>' +
+        '<h5>Overall: ' + placeInfo.review.overall.toFixed(2) + ' /5</h5>' +
+        '<h5>Food: ' + placeInfo.review.food.toFixed(2) + ' /5</h5>' +
+        '<h5>Entertainment: ' + placeInfo.review.entertainment.toFixed(2) + ' /5</h5>' +
+        '<h5>Traffic: ' + placeInfo.review.traffic.toFixed(2) + ' /5</h5>' +
+        '<h5>Beauty: ' + placeInfo.review.beauty.toFixed(2) + ' /5</h5>' +
         '<h5>Description: ' + placeInfo.description + '</h5>' +
       '</div>';
 
@@ -230,6 +234,11 @@ class Home extends React.Component {
                   <h3 className='panel-title'>Route</h3>
               </div>
               <div id='directionPanel' className='row panel-body'>
+                <div className='col-xs-12 list-group'>
+                  <a href={'/places/'+this.state.origin.name} className='list-group-item route'>{'Start: ' + this.state.origin.name.toUpperCase()}</a>
+                  <a href={'/places/'+this.state.rawWayPoints[0].name} className='list-group-item route'>{'Way Point: ' + this.state.rawWayPoints[0].name.toUpperCase()}</a>
+                  <a href={'/places/'+this.state.destination.name} className='list-group-item route'>{'End: ' + this.state.destination.name.toUpperCase()}</a>
+                </div>
               </div>
             </div>
           </div>

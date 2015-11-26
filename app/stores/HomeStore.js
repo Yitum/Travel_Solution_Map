@@ -22,6 +22,7 @@ class HomeStore {
     this.infoWindows = [];
     this.placesInfo =[];
     this.wayPoints = [];
+    this.rawWayPoints = [{name: ''}];
   }
 
   onUpdateOrigin(place) {
@@ -87,6 +88,7 @@ class HomeStore {
   }
 
   onGetWayPointsSuccess(data) {
+    this.rawWayPoints = JSON.parse(data);
     var wayPoints = JSON.parse(data).map(function(waypoint) {
       return {
         location: waypoint.coordinate,

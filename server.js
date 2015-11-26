@@ -284,7 +284,8 @@ app.get('/api/places/favorite/:type', function(req, res, next) {
 });
 
 app.get('/api/places/info', function(req, res, next) {
-  Place.find(null, 'name description coordinate review.overall', function(err, places) {
+  Place.find(null, 'name description coordinate review.overall review.food review.entertainment review.traffic review.beauty',
+    function(err, places) {
     if (err) return next(err);
 
     if (!places) {
