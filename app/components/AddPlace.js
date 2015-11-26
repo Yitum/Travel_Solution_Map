@@ -16,52 +16,43 @@ class AddPlace extends React.Component {
       center: {lat: 48.421440, lng: -89.262108},
       zoom: 15
     });
-    var input = document.getElementById('pac-input');
-    var searchBox = new google.maps.places.SearchBox(input);
 
-    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    var placeName = document.getElementById('placeName');
+    var options = {
+      types: ['(cities)'],
+      componentRestrictions: {country: 'ca'}
+    }
+    var autocomplete = new google.maps.places.Autocomplete(placeName, options);
+    autocomplete.bindTo('bounds', map);
 
-    map.addListener('bound_changed', function(){
-      searchBox.setBounds(map.getBounds());
+    var marker = new google.maps.Marker({
+      map: map,
+      anchorPoint: new google.maps.Point(0, -29)
     });
 
-    searchBox.addListener('places_changed', () => {
-      var places = searchBox.getPlaces();
 
-      if(places.length == 0) {
+    autocomplete.addListener('place_changed', () => {
+      var place = autocomplete.getPlace();
+      if (!place.geometry) {
+        window.alert("Autocomplete's returned place contains no geometry");
         return;
       }
 
-      // Clean the markers
-      this.state.markers.forEach(function(marker) {
-        marker.setMap(null);
-      });
-      this.state.markers = [];
+      // If the place has a geometry, then present it on a map.
+      if (place.geometry.viewport) {
+        map.fitBounds(place.geometry.viewport);
+      } else {
+        map.setCenter(place.geometry.location);
+        map.setZoom(17);  // Why 17? Because it looks good.
+      }
 
-      var bounds = new google.maps.LatLngBounds();
+      marker.setPosition(place.geometry.location);
 
-      // Create new markers accoring to the input place
-      places.forEach((place) => {
-        let newMarker = new google.maps.Marker({
-          map: map,
-          title: place.name,
-          position: place.geometry.location
-        });
-        newMarker.addListener('click', function(event) {
-          AddPlaceActions.updateCoordinate(event);
-        });
-
-        this.state.markers.push(newMarker);
-        if (place.geometry.viewport) {
-          // Only geocodes have viewport.
-          bounds.union(place.geometry.viewport);
-        } else {
-          bounds.extend(place.geometry.location);
-        }
-      });
-
-      map.fitBounds(bounds);
+      if (place.address_components) {
+        AddPlaceActions.updatePlaceInfo(place);
+      }
     });
+
   }
 
   componentDidMount() {
@@ -82,36 +73,18 @@ class AddPlace extends React.Component {
     event.preventDefault();
 
     var name = this.state.name.trim();
-    var gender = this.state.gender;
     var description = this.state.description.trim();
-    var coordinate = {
-      'lat': this.state.coordinate.lat,
-      'lng': this.state.coordinate.lng
-    };
+    var coordinate = this.state.coordinate;
     var imageUrl = this.state.imageUrl;
 
-    if (!name) {
+    if (!name || !coordinate.lat || !coordinate.lng) {
       AddPlaceActions.invalidName();
       this.refs.nameTextField.focus();
-    }
-
-    if (!gender) {
-      AddPlaceActions.invalidGender();
     }
 
     if (!description) {
       AddPlaceActions.invalidDescription();
       this.refs.descriptionTextField.focus();
-    }
-
-    if (!coordinate.lat) {
-      AddPlaceActions.invalidCoordinate();
-      this.refs.latTextField.focus();
-    }
-
-    if (!coordinate.lng) {
-      AddPlaceActions.invalidCoordinate();
-      this.refs.lngTextField.focus();
     }
 
     if (!imageUrl) {
@@ -120,7 +93,7 @@ class AddPlace extends React.Component {
     }
 
     if (name && description && coordinate.lat && coordinate.lng && imageUrl) {
-      AddPlaceActions.addPlace(name, description, {'lat': coordinate.lat, 'lng': coordinate.lng}, imageUrl);
+      AddPlaceActions.addPlace(name, description, coordinate, imageUrl);
     }
   }
 
@@ -137,7 +110,7 @@ render() {
                   <div className={'form-group ' + this.state.nameValidationState}>
                     <label className='control-label col-sm-2'>Name</label>
                     <div className='col-sm-8'>
-                      <input type='text' className='form-control' ref='nameTextField' value={this.state.name} onChange={AddPlaceActions.updateName} autoFocus/>
+                      <input id='placeName' type='text' className='form-control' ref='nameTextField' value={this.state.name} onChange={AddPlaceActions.updateName} autoFocus/>
                     </div>
                   </div>
 
@@ -145,18 +118,6 @@ render() {
                     <label className='control-label col-sm-2'>Description</label>
                     <div className='col-sm-8'>
                       <input type='text' className='form-control' ref='descriptionTextField' value={this.state.description} onChange={AddPlaceActions.updateDescription} />
-                    </div>
-                  </div>
-
-                  <div className={'form-group ' + this.state.coordinateValidationState}>
-                    <label className='col-sm-2 control-label'>Coordinate</label>
-                    <div className='col-sm-2'>
-                      <input type='text' className="form-control" ref="latTextField" value={this.state.coordinate.lat} onChange={AddPlaceActions.updateCoordinateLat}/>
-                      <div className='help'>Latitude</div>
-                    </div>
-                    <div className='col-sm-2'>
-                      <input type='text' className="form-control" ref="lngTextField" value={this.state.coordinate.lng} onChange={AddPlaceActions.updateCoordinateLng}/>
-                      <div className='help'>Longitude</div>
                     </div>
                   </div>
 
@@ -174,7 +135,6 @@ render() {
                 </form>
               </div>
             </div>
-            <input id='pac-input' ref='pac-input' className='type-selector' type='text' placeholder='Search Box' />
             <div id='googleMap' ref='googleMap' style={{height:300}}></div>
           </div>
         </div>

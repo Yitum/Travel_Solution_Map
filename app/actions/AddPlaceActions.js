@@ -10,9 +10,7 @@ class AddPlaceActions {
       'updateName',
       'updateGender',
       'updateDescription',
-      'updateCoordinateLat',
-      'updateCoordinateLng',
-      'updateCoordinate',
+      'updatePlaceInfo',
       'updateImage',
       'invalidName',
       'invalidGender',
@@ -20,21 +18,6 @@ class AddPlaceActions {
       'invalidCoordinate',
       'invalidImage'
     );
-  }
-
-  addCharacter(name, gender) {
-    $.ajax({
-      type: 'POST',
-      url: '/api/characters',
-      data: { name: name, gender: gender }
-    })
-      .done((data) => {
-        this.actions.addCharacterSuccess(data.message);
-      })
-      .fail((jqXHR, textStatus, errorThrown) => {
-        console.log(textStatus + '-----' + errorThrown);
-        this.actions.addCharacterFail(jqXHR.responseJSON.message);
-      });
   }
 
   addPlace(name, description, coordinate, image) {

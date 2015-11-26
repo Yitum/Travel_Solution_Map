@@ -10,7 +10,6 @@ class AddPlaceStore {
     this.nameValidationState = '';
     this.genderValidationState = '';
     this.descriptionValidationState = '';
-    this.coordinateValidationState = '';
     this.imageValidationState = '';
 
     this.description = '';
@@ -55,22 +54,11 @@ class AddPlaceStore {
     this.helpBlock = '';
   }
 
-  onUpdateCoordinate(event) {
-    this.coordinate.lat = event.latLng.lat();
-    this.coordinate.lng = event.latLng.lng();
-    this.coordinateValidationState = '';
-    this.helpBlock = '';
-  }
-
-  onUpdateCoordinateLat(event) {
-    this.coordinate.lat = event.target.value;
-    this.coordinateValidationState = '';
-    this.helpBlock = '';
-  }
-
-  onUpdateCoordinateLng(event) {
-    this.coordinate.lng = event.target.value;
-    this.coordinateValidationState = '';
+  onUpdatePlaceInfo(place) {
+    this.name = place.address_components[0].short_name;
+    this.coordinate.lat = place.geometry.location.lat();
+    this.coordinate.lng = place.geometry.location.lng();
+    this.nameValidationState = '';
     this.helpBlock = '';
   }
 
