@@ -47,11 +47,11 @@ class PlaceInfo extends React.Component {
             </a>
           </div>
           <div className='profile-info clearfix'>
-            <h2 className='col-sm-10'><strong>{this.state.name}</strong></h2>
-            <h4 className='lead col-sm-10'>Description: <strong>{this.state.description}</strong></h4>
+            <h2 className='col-sm-10'><strong>{this.state.name.toUpperCase()}</strong></h2>
+            <h4 className='lead col-sm-10'>Description: <i>{this.state.description}</i></h4>
             <h4 className='lead'>
-              <span className='col-sm-5'>Latitute: <strong>{this.state.coordinate.lat}</strong></span>
-              <span className='col-sm-5'>Longitude: <strong>{this.state.coordinate.lng}</strong></span>
+              <span className='col-sm-5'>Latitute: <strong>{Number(this.state.coordinate.lat).toFixed(2)}</strong></span>
+              <span className='col-sm-5'>Longitude: <strong>{Number(this.state.coordinate.lng).toFixed(2)}</strong></span>
             </h4>
             <div>
               <h4 className='col-sm-5 lead'>Overall Rate: </h4>
