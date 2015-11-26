@@ -120,9 +120,10 @@ app.get('/api/places/favorite/:type', function(req, res, next) {
 
   async.waterfall([
     function(callback) {
+      /* Get all of places */
       Place.
         find().
-        select('name coordinate review.food review.entertainment review.traffic review.beauty').
+        select('name coordinate review.overall review.food review.entertainment review.traffic review.beauty').
         exec(function(err, places) {
           if (err) return next(err);
 
@@ -134,6 +135,7 @@ app.get('/api/places/favorite/:type', function(req, res, next) {
         });
     },
     function(places, callback) {
+      /* filter places that in the range between origin and destination */
       var nodes = [];
 
       places.forEach(function(place) {
@@ -145,8 +147,8 @@ app.get('/api/places/favorite/:type', function(req, res, next) {
           console.log('lng in the range: %d to %d', smallLng, largeLng);
         }
 
-        if (lat >= smallLat && lat <= largeLat) {
-          if (lng >= smallLng && lng <= largeLng) {
+        if (lat > smallLat && lat < largeLat) {
+          if (lng > smallLng && lng < largeLng) {
             nodes.push(place);
           }
         }
@@ -159,7 +161,122 @@ app.get('/api/places/favorite/:type', function(req, res, next) {
       callback(null, nodes);
     },
     function(places, callback) {
-      console.log(places);
+      /* Add next dist prev field to the filtered nodes */
+      var nodes = places.map(function(place, index) {
+        return {
+          name: place.name,
+          coordinate: place.coordinate,
+          review: place.review,
+          next: [destination],
+          dist: Infinity,
+          prev: []
+        }
+      });
+      callback(null, nodes);
+    },
+    function(places, callback){
+      var nodes = [];
+      /* Modify the review number for each place */
+      /* Depends on the favorite */
+      nodes = places.map(function(place) {
+        var newReview = 0;
+        if (favorite == 'food') {
+          newReview = Math.round(100 / place.review.food) / 100;
+        } else if (favorite == 'entertainment') {
+          newReview = Math.round(100 / place.review.entertainment) / 100;
+        } else if (favorite == 'traffic') {
+          newReview = Math.round(100 / place.review.traffic) / 100;
+        } else if (favorite == 'beauty') {
+          newReview = Math.round(100 / place.review.beauty) / 100;
+        }
+
+        return{
+          name: place.name,
+          coordinate: place.coordinate,
+          review: newReview,
+          next : place.next,
+          dist: place.dist,
+          prev: place.prev
+        };
+      });
+
+      /* Generate a array which contain name and coordinate */
+      var sourceNext = nodes.map(function(node) {
+        return {
+          name: node.name,
+          coordinate: node.coordinate
+        }
+      });
+
+      /* Add origin and destination node */
+      nodes.push({
+        name: origin.name,
+        coordinate: origin.location,
+        review: '',
+        next: sourceNext,
+        dist: 0,
+        prev: []
+      });
+      nodes.push({
+        name: destination.name,
+        coordinate: destination.location,
+        review: '',
+        next: null,
+        dist: Infinity,
+        prev: []
+      });
+      //console.log(nodes);
+      callback(null, nodes);
+    },
+    function(places, callback) {
+      var route = [];
+      var judgement = false;
+
+      while (places.length > 0) {
+        var current = {
+          dist: Infinity
+        };
+        var position = -1;
+
+        places.forEach(function(place, index) {
+          if (place.dist < current.dist) {
+            current = place;
+            position = index;
+          }
+        });
+        console.log('--------Place List----------');
+        console.log(places);
+
+        places.splice(position, 1);
+
+        console.log('--------Updated Place List----------');
+        console.log(places);
+
+        current.next.forEach(function(next) {
+          places.forEach(function(place) {
+            if (place.name == next.name) {
+
+              var alt = current.dist + place.review;
+              if (alt < place.dist) {
+                place.dist = alt;
+                place.prev = current.prev.slice();
+                place.prev.push(current.name);
+              }
+              if (place.name == destination.name) {
+                judgement = true;
+                route = place.prev;
+                console.log('Reach the destination %s via %s', place.name, place.prev);
+                return;
+              }
+            }
+          });
+        });
+
+        if (judgement) {
+          break;
+        }
+      }
+      console.log(route);
     }
   ]);
 });
