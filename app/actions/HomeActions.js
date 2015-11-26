@@ -34,7 +34,7 @@ class HomeActions {
       });
   }
 
-  getWayPoints(origin, destination, favorite) {
+  getWayPoints(origin, destination, favorite, callback) {
     $.ajax({
       type: 'GET',
       url: '/api/places/favorite/' + favorite.toLowerCase(),
@@ -45,6 +45,7 @@ class HomeActions {
     })
       .done((data) => {
         this.actions.getWayPointsSuccess(data);
+        callback();
       })
       .fail((jqXHR, textStatus, errorThrown) => {
         this.actions.getWayPointsFail(jqXHR);

@@ -142,7 +142,8 @@ class Home extends React.Component {
     this.directionsService.route({
       origin: this.state.origin.location,
       destination: this.state.destination.location,
-      travelMode: google.maps.TravelMode.DRIVING
+      travelMode: google.maps.TravelMode.DRIVING,
+      waypoints: this.state.wayPoints
     }, (response, status) => {
       if (status === google.maps.DirectionsStatus.OK) {
         this.directionsDisplay.setDirections(response);
@@ -175,8 +176,8 @@ class Home extends React.Component {
     }
 
     if (origin && destination && favorite != 'Favorite') {
-      HomeActions.getWayPoints(this.state.origin, this.state.destination, favorite);
-      this.calculateAndDisplayRoute();
+      var callback = this.calculateAndDisplayRoute.bind(this);
+      HomeActions.getWayPoints(this.state.origin, this.state.destination, favorite, callback);
     }
   }
 

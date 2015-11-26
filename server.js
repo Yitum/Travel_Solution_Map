@@ -260,7 +260,7 @@ app.get('/api/places/favorite/:type', function(req, res, next) {
               if (alt < place.dist) {
                 place.dist = alt;
                 place.prev = current.prev.slice();
-                place.prev.push(current.name);
+                place.prev.push({name: current.name, coordinate: current.coordinate});
               }
               if (place.name == destination.name) {
                 judgement = true;
@@ -276,7 +276,9 @@ app.get('/api/places/favorite/:type', function(req, res, next) {
           break;
         }
       }
-      console.log(route);
+      /* delete the origin node */
+      route.splice(0, 1);
+      res.send(JSON.stringify(route));
     }
   ]);
 });
