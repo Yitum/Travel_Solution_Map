@@ -1,12 +1,43 @@
 import React from 'react';
 import HomeActions from '../actions/HomeActions';
 import HomeStore from '../stores/HomeStore';
+import {assign} from 'underscore';
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = HomeStore.getState();
     this.onChange = this.onChange.bind(this);
+    this.stopInputNodes = [];
+    this.stopAutocompletes = [];
+    this.stopCount = 0;
+  }
+
+  /* Place autocomplete input handler */
+  autocompleteHandler(placeResult) {
+
+    if (!placeResult.geometry) {
+      window.alert("Autocomplete's returned place contains no geometry");
+      return;
+    }
+
+    // If the place has a geometry, then present it on a map.
+    if (placeResult.geometry.viewport) {
+      this.map.fitBounds(placeResult.geometry.viewport);
+    } else {
+      this.map.setCenter(placeResult.geometry.location);
+      this.map.setZoom(17);  // Why 17? Because it looks good.
+    }
+
+    if (placeResult.address_components) {
+      if (placeResult.inputId == 'origin') {
+        HomeActions.updateOrigin(placeResult);
+      } else if (placeResult.inputId == 'destination') {
+        HomeActions.updateDestination(placeResult);
+      } else {
+        HomeActions.updateStops(placeResult);
+      }
+    }
   }
 
   initMap() {
@@ -33,42 +64,17 @@ class Home extends React.Component {
     var originAutocomplete = new google.maps.places.Autocomplete(originInput, options);
     var destinationAutocomplete = new google.maps.places.Autocomplete(destinationInput, options);
 
-
-    /* Place autocomplete input handler */
-    var placeHandler = (place, inputTarget) => {
-
-      if (!place.geometry) {
-        window.alert("Autocomplete's returned place contains no geometry");
-        return;
-      }
-
-      // If the place has a geometry, then present it on a map.
-      if (place.geometry.viewport) {
-        this.map.fitBounds(place.geometry.viewport);
-      } else {
-        this.map.setCenter(place.geometry.location);
-        this.map.setZoom(17);  // Why 17? Because it looks good.
-      }
-
-      if (place.address_components) {
-        /* Update origin and destination*/
-        if (inputTarget == 'origin') {
-          HomeActions.updateOrigin(place);
-        } else {
-          HomeActions.updateDestination(place);
-        }
-      }
-    }
-
     /* Add place_changed event listener to those input elements */
     originAutocomplete.addListener('place_changed', () => {
       var place = originAutocomplete.getPlace();
-      placeHandler(place, 'origin');
+      assign(place, {inputId: 'origin'});
+      this.autocompleteHandler(place);
     });
 
     destinationAutocomplete.addListener('place_changed', () => {
       var place = destinationAutocomplete.getPlace();
-      placeHandler(place, 'destination');
+      assign(place, {inputId: 'destination'});
+      this.autocompleteHandler(place);
     });
 
   }
@@ -117,6 +123,7 @@ class Home extends React.Component {
       /* Add click event listener to each marker */
       marker.addListener('click', () => {
         infowindow.open(this.map, marker);
+        setTimeout(function(){infowindow.close()}, 3000);
       })
 
       this.state.infoWindows.push(infowindow);
@@ -135,11 +142,8 @@ class Home extends React.Component {
     this.initMapMarkers();
   }
 
-  componentDidUpdate() {
+  componentWillUnmount() {
     HomeStore.unlisten(this.onChange);
-  }
-
-  componentDidUpdate() {
   }
 
   calculateAndDisplayRoute() {
@@ -156,7 +160,6 @@ class Home extends React.Component {
       }
     });
   }
-
 
   searchHandler(event) {
     event.preventDefault();
@@ -185,8 +188,61 @@ class Home extends React.Component {
     }
   }
 
+  updateStopInputNodes() {
+    /* Get the stop input element node */
+    for(var i=0; i<this.stopCount; i++) {
+      let stopId = 'stop-' + i;
+      this.stopInputNodes.push(document.getElementById(stopId));
+    }
+
+    /* Add autocomplete */
+    this.stopInputNodes.forEach((inputNode, index)=> {
+      let options = {
+        types: ['(cities)'],
+        componentRestrictions: {country: 'ca'}
+      }
+      var stopAutocomplete = new google.maps.places.Autocomplete(inputNode, options);
+
+      stopAutocomplete.addListener('place_changed', () => {
+        var place = stopAutocomplete.getPlace();
+        assign(place, {inputId: inputNode.id});
+
+        this.autocompleteHandler(place, 'stops');
+      });
+
+      this.stopAutocompletes[inputNode.id] = stopAutocomplete;
+    });
+  }
+
+  addStopHandler(event) {
+    event.preventDefault();
+
+    this.stopCount++;
+    this.forceUpdate(this.updateStopInputNodes.bind(this));
+  }
 
   render() {
+
+    let stopInputs = [];
+    for(var i=0; i<this.stopCount; i++) {
+      let id = 'stop-'+i;
+      if (!this.state.stops[id]) {
+        this.state.stops[id] = {name: '', location: {lat: '', lng: ''}};
+      }
+
+      stopInputs.push(
+        <div key={id} className='col-xs-12'>
+          <div className='input-group'>
+            <input id={id} type='text' className='form-control' value={this.state.stops[id].name} placeholder='Stop ...'
+              onChange={HomeActions.updateStopsDisplay} />
+            <span className="input-group-btn">
+              <button className="btn btn-default" type="button">Go!</button>
+            </span>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className='container-fluid map-container row'>
         <div className='col-xs-3 map-panel'>
@@ -199,11 +255,14 @@ class Home extends React.Component {
               <div className='row panel-body'>
                 <div className={'col-xs-12 input-goup ' + this.state.originValidationState}>
                   <input id='originInput' type='text' className='form-control' value={this.state.origin.name} placeholder='From ...'
-                    ref='originTextField' aria-describedby='basic-addon1' onChange={HomeActions.updateOriginDisplay} />
+                    ref='originTextField' onChange={HomeActions.updateOriginDisplay} />
                 </div>
+
+                { stopInputs }
+
                 <div className={'col-xs-12 input-goup ' + this.state.destinationValidationState}>
                   <input id='destinationInput' type='text' className='form-control' value={this.state.destination.name} placeholder='To ...'
-                    ref='destinationTextField' aria-describedby='basic-addon1' onChange={HomeActions.updateDestinationDisplay}/>
+                    ref='destinationTextField' onChange={HomeActions.updateDestinationDisplay}/>
                 </div>
                 <div className='col-xs-12 btn-group'>
                   <button type="button" className={'btn ' + this.state.favoriteValidationState}>{this.state.favorite}</button>
@@ -221,7 +280,8 @@ class Home extends React.Component {
                   </ul>
                 </div>
                 <div className='col-xs-12 search-button'>
-                  <button type='button' className='btn btn-primary' onClick={this.searchHandler.bind(this)} >Search</button>
+                  <button type='button' className='btn btn-primary' onClick={this.searchHandler.bind(this)} ><span className="glyphicon glyphicon-search" aria-hidden="true"></span> Search</button>
+                  <button type='button' className='btn btn-primary' onClick={this.addStopHandler.bind(this)} ><span className="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Stop</button>
                   <span className='help-block'>{this.state.helpBlock}</span>
                 </div>
               </div>

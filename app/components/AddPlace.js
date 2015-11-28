@@ -93,7 +93,7 @@ class AddPlace extends React.Component {
     }
 
     if (name && description && coordinate.lat && coordinate.lng && imageUrl) {
-      AddPlaceActions.addPlace(name, description, coordinate, imageUrl);
+      AddPlaceActions.addPlace(name, description, coordinate, imageUrl, this.props.history);
     }
   }
 

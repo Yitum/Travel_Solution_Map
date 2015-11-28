@@ -1,10 +1,9 @@
 import alt from '../alt';
+import {assign} from 'underscore';
 
 class AddPlaceActions {
   constructor() {
     this.generateActions(
-      'addCharacterSuccess',
-      'addCharacterFail',
       'addPlaceSuccess',
       'addPlaceFail',
       'updateName',
@@ -20,7 +19,7 @@ class AddPlaceActions {
     );
   }
 
-  addPlace(name, description, coordinate, image) {
+  addPlace(name, description, coordinate, image, history) {
     let reader = new  FileReader();
 
     reader.onloadend = () => {
@@ -33,14 +32,17 @@ class AddPlaceActions {
         data: {name: name, description: description, coordinate: coordinateString, imageUrl: imageUrl}
       })
         .done((data) => {
-          this.actions.addPlaceSuccess(data.message);
+          let payload = {name: name, history: history};
+          assign(payload, data);
+
+          this.actions.addPlaceSuccess(payload);
         })
         .fail((jqXHR, textStatus, errorThrown) => {
           let errorMessage;
 
           switch(jqXHR.status) {
             case 409:
-              errorMessage = 'Name Has Been Used';
+              errorMessage = 'Place is exsisted';
               break;
             case 413:
               errorMessage = 'Image Too Large';

@@ -19,18 +19,9 @@ class AddPlaceStore {
     this.markers = [];
   }
 
-  onAddCharacterSuccess(successMessage) {
-    this.nameValidationState = 'has-success';
-    this.helpBlock = successMessage;
-  }
-
-  onAddCharacterFail(errorMessage) {
-    this.nameValidationState = 'has-error';
-    this.helpBlock = errorMessage;
-  }
-
-  onAddPlaceSuccess(successMessage) {
-    this.helpBlock = successMessage;
+  onAddPlaceSuccess(payload) {
+    this.helpBlock = payload.message;
+    payload.history.pushState(null, '/places/'+payload.name);
   }
 
   onAddPlaceFail(errorMessage) {

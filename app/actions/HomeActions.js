@@ -15,7 +15,9 @@ class HomeActions {
       'getPlacesInfoSuccess',
       'getPlacesInfoFail',
       'getWayPointsSuccess',
-      'getWayPointsFail'
+      'getWayPointsFail',
+      'updateStops',
+      'updateStopsDisplay'
     );
 
   }

@@ -23,6 +23,17 @@ class HomeStore {
     this.placesInfo =[];
     this.wayPoints = [];
     this.rawWayPoints = [{name: ''}];
+    this.stops = [];
+  }
+
+  onUpdateStopsDisplay(event) {
+    this.stops[event.target.id].name = event.target.value;
+  }
+
+  onUpdateStops(place) {
+    this.stops[place.inputId].name = place.address_components[0].short_name;
+    this.stops[place.inputId].location.lat = place.geometry.location.lat();
+    this.stops[place.inputId].location.lng = place.geometry.location.lng();
   }
 
   onUpdateOrigin(place) {
