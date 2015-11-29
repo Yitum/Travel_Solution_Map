@@ -17,7 +17,8 @@ class HomeActions {
       'getWayPointsSuccess',
       'getWayPointsFail',
       'updateStops',
-      'updateStopsDisplay'
+      'updateStopsDisplay',
+      'deleteStop'
     );
 
   }

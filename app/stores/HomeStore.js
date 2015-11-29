@@ -26,6 +26,10 @@ class HomeStore {
     this.stops = [];
   }
 
+  onDeleteStop(stopId) {
+    this.stops[stopId] = {name:'', location: {lat:0, lng:0}};
+  }
+
   onUpdateStopsDisplay(event) {
     this.stops[event.target.id].name = event.target.value;
   }

@@ -221,6 +221,12 @@ class Home extends React.Component {
     this.forceUpdate(this.updateStopInputNodes.bind(this));
   }
 
+  deleteStopHandler(stopId) {
+    HomeActions.deleteStop(stopId);
+    document.getElementById(stopId).parentElement.parentElement.className = 'col-xs-12 fadeOut animated'
+    setTimeout(()=>{document.getElementById(stopId).parentElement.parentElement.style.display = 'none';}, 1000);
+  }
+
   render() {
 
     let stopInputs = [];
@@ -231,12 +237,14 @@ class Home extends React.Component {
       }
 
       stopInputs.push(
-        <div key={id} className='col-xs-12'>
+        <div key={id} className='col-xs-12 fadeIn animated'>
           <div className='input-group'>
             <input id={id} type='text' className='form-control' value={this.state.stops[id].name} placeholder='Stop ...'
               onChange={HomeActions.updateStopsDisplay} />
             <span className="input-group-btn">
-              <button className="btn btn-default" type="button">Go!</button>
+              <button className="btn btn-default" type="button" onClick={this.deleteStopHandler.bind(this, id)} >
+                <span className="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>
+              </button>
             </span>
           </div>
         </div>
