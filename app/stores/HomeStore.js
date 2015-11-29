@@ -26,18 +26,23 @@ class HomeStore {
     this.stops = [];
   }
 
-  onDeleteStop(stopId) {
-    this.stops[stopId] = {name:'', location: {lat:0, lng:0}};
+  onDeleteStop(index) {
+    this.stops[index] = {name:'', location: {lat:0, lng:0}};
   }
 
   onUpdateStopsDisplay(event) {
-    this.stops[event.target.id].name = event.target.value;
+    this.stops[event.target.id.slice(-1)].name = event.target.value;
   }
 
   onUpdateStops(place) {
-    this.stops[place.inputId].name = place.address_components[0].short_name;
-    this.stops[place.inputId].location.lat = place.geometry.location.lat();
-    this.stops[place.inputId].location.lng = place.geometry.location.lng();
+    let stop = {
+      name: place.address_components[0].short_name,
+      location: {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng()
+      }
+    }
+    this.stops[place.inputId.slice(-1)] = stop;
   }
 
   onUpdateOrigin(place) {

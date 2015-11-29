@@ -37,13 +37,14 @@ class HomeActions {
       });
   }
 
-  getWayPoints(origin, destination, favorite, callback) {
+  getWayPoints(origin, destination, favorite, stops, callback) {
     $.ajax({
       type: 'GET',
       url: '/api/places/favorite/' + favorite.toLowerCase(),
       data: {
         origin: JSON.stringify(origin),
-        destination: JSON.stringify(destination)
+        destination: JSON.stringify(destination),
+        stops: JSON.stringify(stops)
       }
     })
       .done((data) => {

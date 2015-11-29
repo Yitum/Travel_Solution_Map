@@ -167,6 +167,13 @@ class Home extends React.Component {
     var origin = this.state.origin.name.trim();
     var destination = this.state.destination.name.trim();
     var favorite = this.state.favorite;
+    var stops = [];
+
+    this.state.stops.forEach((stop, index)=>{
+      if (stop.name) {
+        stops.push(stop);
+      }
+    });
 
     if (!origin) {
       HomeActions.invalidOrigin();
@@ -184,7 +191,7 @@ class Home extends React.Component {
 
     if (origin && destination && favorite != 'Favorite') {
       var callback = this.calculateAndDisplayRoute.bind(this);
-      HomeActions.getWayPoints(this.state.origin, this.state.destination, favorite, callback);
+      HomeActions.getWayPoints(this.state.origin, this.state.destination, favorite, stops, callback);
     }
   }
 
@@ -221,8 +228,10 @@ class Home extends React.Component {
     this.forceUpdate(this.updateStopInputNodes.bind(this));
   }
 
-  deleteStopHandler(stopId) {
-    HomeActions.deleteStop(stopId);
+  deleteStopHandler(index) {
+    HomeActions.deleteStop(index);
+
+    let stopId = 'stop-' + index;
     document.getElementById(stopId).parentElement.parentElement.className = 'col-xs-12 fadeOut animated'
     setTimeout(()=>{document.getElementById(stopId).parentElement.parentElement.style.display = 'none';}, 1000);
   }
@@ -232,17 +241,17 @@ class Home extends React.Component {
     let stopInputs = [];
     for(var i=0; i<this.stopCount; i++) {
       let id = 'stop-'+i;
-      if (!this.state.stops[id]) {
-        this.state.stops[id] = {name: '', location: {lat: '', lng: ''}};
+      if (!this.state.stops[i]) {
+        this.state.stops[i] = {name: '', location: {lat: '', lng: ''}};
       }
 
       stopInputs.push(
         <div key={id} className='col-xs-12 fadeIn animated'>
           <div className='input-group'>
-            <input id={id} type='text' className='form-control' value={this.state.stops[id].name} placeholder='Stop ...'
+            <input id={id} type='text' className='form-control' value={this.state.stops[i].name} placeholder='Stop ...'
               onChange={HomeActions.updateStopsDisplay} />
             <span className="input-group-btn">
-              <button className="btn btn-default" type="button" onClick={this.deleteStopHandler.bind(this, id)} >
+              <button className="btn btn-default" type="button" onClick={this.deleteStopHandler.bind(this, i)} >
                 <span className="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>
               </button>
             </span>
