@@ -109,7 +109,7 @@ class HomeStore {
 
   onGetWayPointsSuccess(data) {
     this.rawWayPoints = JSON.parse(data);
-    var wayPoints = JSON.parse(data).map(function(waypoint) {
+    var wayPoints = this.rawWayPoints.map(function(waypoint) {
       return {
         location: waypoint.coordinate,
         stopover: true
