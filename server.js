@@ -118,12 +118,14 @@ app.get('/api/places/favorite/:type', function(req, res, next) {
   var myRoute = new routeAlgorithm();
   var routeResult;
 
-  var sendResult = function(result) {
-    if (!result) return res.send('');
+  var sendResult = function(err, result) {
+    console.log('*********' + JSON.stringify(result));
 
-    console.log('The most favorite %s place is %s', favorite, result[0].name);
-    var newResult = JSON.stringify(result)
-    res.send(newResult);
+    if (!result.waypoint) return res.send('');
+
+
+    var selectResult = JSON.stringify(result.waypoint);
+    res.send(selectResult);
   }
 
   if(favorite == 'distance') return sendResult('');
