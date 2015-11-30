@@ -43,7 +43,7 @@ var greedy = function() {
         });
 
         if (nodes.length == 0) {
-          return res.status(409).send({message: 'No place found between two cities'});
+          callback(new Error('No place between origin and destination'));
         }
 
         callback(null, nodes);
@@ -61,19 +61,19 @@ var greedy = function() {
 
         places.forEach(function(place) {
           if (favorite == 'food') {
-            if (place.review.food > maxRated.review.food) {
+            if (place.review.food >= maxRated.review.food) {
               maxRated = place;
             }
           } else if (favorite == 'entertainment') {
-            if (place.review.entertainment > maxRated.review.entertainment) {
+            if (place.review.entertainment >= maxRated.review.entertainment) {
               maxRated = place;
             }
           } else if (favorite == 'traffic') {
-            if (place.review.traffic > maxRated.review.traffic) {
+            if (place.review.traffic >= maxRated.review.traffic) {
               maxRated = place;
             }
           } else if (favorite == 'beauty') {
-            if (place.review.beauty > maxRated.review.beauty) {
+            if (place.review.beauty >= maxRated.review.beauty) {
               maxRated = place;
             }
           }
@@ -82,8 +82,15 @@ var greedy = function() {
         callback(null, maxRated);
       }
     ], function(err, result) {
-      /* push the object to an array for later process */
-      let resultArray = [result];
+      var resultArray;
+
+      if (err) {
+        console.log(err);
+        resultArray = '';
+      } else {
+        /* push the object to an array for later process */
+        resultArray = [result];
+      }
 
       callbackFunc(resultArray);
     });

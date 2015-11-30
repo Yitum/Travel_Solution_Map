@@ -108,6 +108,16 @@ class HomeStore {
   }
 
   onGetWayPointsSuccess(data) {
+    /* if no way point return */
+    if (!data) {
+      this.wayPoints = [];
+      if(this.favorite != 'Distance') {
+        toastr.warning('No record between origin and destination');
+      }
+      return;
+    }
+
+    /* if there is way point return */
     this.rawWayPoints = JSON.parse(data);
     var wayPoints = this.rawWayPoints.map(function(waypoint) {
       return {
