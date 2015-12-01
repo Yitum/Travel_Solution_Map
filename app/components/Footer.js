@@ -12,7 +12,6 @@ class Footer extends React.Component {
 
   componentDidMount() {
     FooterStore.listen(this.onChange);
-    FooterActions.getTopCharacters();
   }
 
   componentWillUnmount() {
@@ -24,16 +23,6 @@ class Footer extends React.Component {
   }
 
   render() {
-    let leaderboardCharacters = this.state.characters.map((character) => {
-      return (
-        <li key={character.characterId}>
-          <Link to={'/characters/' + character.characterId}>
-            <img className='thumb-md' src={'http://image.eveonline.com/Character/' + character.characterId + '_128.jpg'} />
-          </Link>
-        </li>
-      )
-    });
-
     return (
       <footer>
         <div className='container'>
@@ -42,12 +31,6 @@ class Footer extends React.Component {
               <h3 className='lead'><strong>Information</strong> and <strong>Copyright</strong></h3>
               <p>Powered by <strong>Node.js</strong>, <strong>MongoDB</strong> and <strong>React</strong> with Flux architecture and server-side rendering.</p>
               <p>© 2015 Tong Wang.</p>
-            </div>
-            <div className='col-sm-7 hidden-xs'>
-              <h3 className='lead'><strong>Leaderboard</strong> Top 5 Characters</h3>
-              <ul className='list-inline'>
-                {leaderboardCharacters}
-              </ul>
             </div>
           </div>
         </div>
