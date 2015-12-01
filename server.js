@@ -160,6 +160,14 @@ app.get('/api/places/search', function(req, res, next) {
   });
 });
 
+app.get('/api/places/count', function(req, res, next) {
+  Place.count({}, function(err, count) {
+    if(err) return next(err);
+
+    res.send({count: count});
+  })
+});
+
 app.get('/api/places/comments', function(req, res, next) {
   var name = req.query.name.toLowerCase();
 

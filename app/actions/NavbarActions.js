@@ -12,7 +12,9 @@ class NavbarActions {
       'findCharacterSuccess',
       'findCharacterFail',
       'findPlaceSuccess',
-      'findPlaceFail'
+      'findPlaceFail',
+      'getPlaceCountSuccess',
+      'getPlaceCountFail'
     );
   }
 
@@ -51,6 +53,16 @@ class NavbarActions {
       })
       .fail((jqXhr) => {
         this.actions.getCharacterCountFail(jqXhr)
+      });
+  }
+
+  getPlaceCount() {
+    $.ajax({ url: '/api/places/count' })
+      .done((data) => {
+        this.actions.getPlaceCountSuccess(data);
+      })
+      .fail((jqXhr) => {
+        this.actions.getPlaceCountFail(jqXhr);
       });
   }
 }

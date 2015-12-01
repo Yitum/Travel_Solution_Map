@@ -5,6 +5,7 @@ class NavbarStore {
   constructor() {
     this.bindActions(NavbarActions);
     this.totalCharacters = 0;
+    this.totalPlaces = 0;
     this.onlineUsers = 0;
     this.searchQuery = '';
     this.ajaxAnimationClass = '';
@@ -50,6 +51,14 @@ class NavbarStore {
   }
 
   onGetCharacterCountFail(jqXhr) {
+    toastr.error(jqXhr.responseJSON.message);
+  }
+
+  onGetPlaceCountSuccess(data) {
+    this.totalPlaces = data.count;
+  }
+
+  onGetPlaceCountFail(jqXhr) {
     toastr.error(jqXhr.responseJSON.message);
   }
 }
