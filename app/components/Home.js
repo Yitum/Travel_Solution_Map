@@ -261,6 +261,13 @@ class Home extends React.Component {
       );
     }
 
+    let waypointInputs = [];
+    waypointInputs = this.state.rawWayPoints.map(function(waypoint) {
+      return(
+        <a key={'waypoint-' + waypoint.name} href={'/places/'+waypoint.name} className='list-group-item route'>{' - ' + waypoint.name.toUpperCase()}</a>
+      );
+    });
+
     return (
       <div className='container-fluid map-container row'>
         <div className='col-xs-3 map-panel'>
@@ -314,7 +321,7 @@ class Home extends React.Component {
               <div id='directionPanel' className='row panel-body'>
                 <div className='col-xs-12 list-group'>
                   <a href={'/places/'+this.state.origin.name} className='list-group-item route'>{'Start: ' + this.state.origin.name.toUpperCase()}</a>
-                  <a href={'/places/'+this.state.rawWayPoints[0].name} className='list-group-item route'>{'Way Point: ' + this.state.rawWayPoints[0].name.toUpperCase()}</a>
+                  { waypointInputs }
                   <a href={'/places/'+this.state.destination.name} className='list-group-item route'>{'End: ' + this.state.destination.name.toUpperCase()}</a>
                 </div>
               </div>
