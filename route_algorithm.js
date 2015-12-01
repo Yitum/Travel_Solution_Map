@@ -166,11 +166,11 @@ var route_algorithm = function() {
                 if (favorite == 'food') {
                   maxRated = result.waypoint[0].review.food >= maxRated.waypoint[0].review.food ? result : maxRated;
                 } else if (favorite == 'entertainment') {
-                  maxRated = result.waypoint[0].entertainment >= maxRated.waypoint[0].review.entertainment ? result : maxRated;
+                  maxRated = result.waypoint[0].review.entertainment >= maxRated.waypoint[0].review.entertainment ? result : maxRated;
                 } else if (favorite == 'traffic') {
-                  maxRated = result.waypoint[0].traffic >= maxRated.waypoint[0].review.traffic ? result : maxRated;
+                  maxRated = result.waypoint[0].review.traffic >= maxRated.waypoint[0].review.traffic ? result : maxRated;
                 } else if (favorite == 'beauty') {
-                  maxRated = result.waypoint[0].beauty >= maxRated.waypoint[0].review.beauty ? result : maxRated;
+                  maxRated = result.waypoint[0].review.beauty >= maxRated.waypoint[0].review.beauty ? result : maxRated;
                 }
               });
               console.log('******************************************************');
