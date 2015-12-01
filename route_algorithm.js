@@ -151,31 +151,38 @@ var route_algorithm = function() {
             console.log('All of waypoint: ' + JSON.stringify(resultArray));
 
             var maxRated = {waypoint: [{review: {food: 0, entertainment: 0, traffic: 0, beauty: 0}}]};
+            var isWaypoint = false;
 
-            /* Fix me! How to handle error */
-            if (!resultArray) callback(null);
-
+            /* Check is there any waypoint between current origin to stops */
             resultArray.forEach(function(result, index) {
-              if (favorite == 'food') {
-                maxRated = result.waypoint[0].review.food >= maxRated.waypoint[0].review.food ? result : maxRated;
-              } else if (favorite == 'entertainment') {
-                maxRated = result.waypoint[0].entertainment >= maxRated.waypoint[0].review.entertainment ? result : maxRated;
-              } else if (favorite == 'traffic') {
-                maxRated = result.waypoint[0].traffic >= maxRated.waypoint[0].review.traffic ? result : maxRated;
-              } else if (favorite == 'beauty') {
-                maxRated = result.waypoint[0].beauty >= maxRated.waypoint[0].review.beauty ? result : maxRated;
-              }
+              if(result.waypoint) return isWaypoint = true;
             });
-            console.log('******************************************************');
-            console.log('Find out the most rated %s is %s', favorite, JSON.stringify(maxRated));
 
-            pushWaypoint(maxRated.waypoint[0]);
+            if(!isWaypoint) {
+              console.log('No waypoint between %s and %s', resultArray[0].origin.name, resultArray[0].destination.name);
+              currentOrigin = stopArray.pop();
+            } else {
+              resultArray.forEach(function(result, index) {
+                if (favorite == 'food') {
+                  maxRated = result.waypoint[0].review.food >= maxRated.waypoint[0].review.food ? result : maxRated;
+                } else if (favorite == 'entertainment') {
+                  maxRated = result.waypoint[0].entertainment >= maxRated.waypoint[0].review.entertainment ? result : maxRated;
+                } else if (favorite == 'traffic') {
+                  maxRated = result.waypoint[0].traffic >= maxRated.waypoint[0].review.traffic ? result : maxRated;
+                } else if (favorite == 'beauty') {
+                  maxRated = result.waypoint[0].beauty >= maxRated.waypoint[0].review.beauty ? result : maxRated;
+                }
+              });
+              console.log('******************************************************');
+              console.log('Find out the most rated %s is %s', favorite, JSON.stringify(maxRated));
 
-            var index = stopArray.indexOf(maxRated.destination);
-            currentOrigin = stopArray.splice(index, 1)[0];
-            console.log('%s has been deleted from stop array', JSON.stringify(currentOrigin));
-            console.log('******************************************************');
+              pushWaypoint(maxRated.waypoint[0]);
 
+              var index = stopArray.indexOf(maxRated.destination);
+              currentOrigin = stopArray.splice(index, 1)[0];
+              console.log('%s has been deleted from stop array', JSON.stringify(currentOrigin));
+              console.log('******************************************************');
+            }
             callback(null, {stopArray: stopArray, currentOrigin: currentOrigin});
           },
           function (result, callback) {

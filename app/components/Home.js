@@ -151,7 +151,8 @@ class Home extends React.Component {
       origin: this.state.origin.location,
       destination: this.state.destination.location,
       travelMode: google.maps.TravelMode.DRIVING,
-      waypoints: this.state.wayPoints
+      waypoints: this.state.wayPoints,
+      optimizeWaypoints: true
     }, (response, status) => {
       if (status === google.maps.DirectionsStatus.OK) {
         this.directionsDisplay.setDirections(response);
