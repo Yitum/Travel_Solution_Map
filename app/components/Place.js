@@ -9,6 +9,10 @@ class Place extends React.Component {
     this.placename = props.params.placename;
   }
 
+  componentDidUpdate() {
+    location.reload();
+  }
+
   render() {
     return(
       <div className='container'>
