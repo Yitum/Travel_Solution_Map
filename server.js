@@ -146,6 +146,20 @@ app.get('/api/places/info', function(req, res, next) {
   })
 });
 
+app.get('/api/places/search', function(req, res, next) {
+  var name = req.query.name.toLowerCase();
+
+  Place.findOne({name: name}, {name}, function(err, place) {
+    if (err) return next(err);
+
+    if(!place) {
+      return res.status(404).send({message: 'No place matched in database'});
+    }
+
+    res.send(place);
+  });
+});
+
 app.get('/api/places/comments', function(req, res, next) {
   var name = req.query.name.toLowerCase();
 

@@ -10,6 +10,18 @@ class NavbarStore {
     this.ajaxAnimationClass = '';
   }
 
+  onFindPlaceSuccess(payload) {
+    payload.history.pushState(null, '/places/' + payload.name);
+  }
+
+  onFindPlaceFail(payload) {
+    toastr.warning('No place matched in database');
+    payload.searchForm.classList.add('shake');
+    setTimeout(() => {
+      payload.searchForm.classList.remove('shake');
+    }, 1000);
+  }
+
   onFindCharacterSuccess(payload) {
     payload.history.pushState(null, '/characters/' + payload.characterId);
   }

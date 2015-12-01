@@ -10,7 +10,9 @@ class NavbarActions {
       'getCharacterCountSuccess',
       'getCharacterCountFail',
       'findCharacterSuccess',
-      'findCharacterFail'
+      'findCharacterFail',
+      'findPlaceSuccess',
+      'findPlaceFail'
     );
   }
 
@@ -26,6 +28,20 @@ class NavbarActions {
       .fail(() => {
         this.actions.findCharacterFail(payload);
       });
+  }
+
+  findPlace(payload) {
+    $.ajax({
+      url: '/api/places/search',
+      data: { name: payload.searchQuery }
+    })
+      .done((data) => {
+        assign(payload, data);
+        this.actions.findPlaceSuccess(payload);
+      })
+      .fail(() => {
+        this.actions.findPlaceFail(payload)
+      })
   }
 
   getCharacterCount() {

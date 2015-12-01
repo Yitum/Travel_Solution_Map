@@ -45,7 +45,7 @@ class Navbar extends React.Component {
     let searchQuery = this.state.searchQuery.trim();
 
     if (searchQuery) {
-      NavbarActions.findCharacter({
+      NavbarActions.findPlace({
         searchQuery: searchQuery,
         searchForm: this.refs.searchForm,
         history: this.props.history
